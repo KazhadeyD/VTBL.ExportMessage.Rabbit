@@ -26,6 +26,7 @@ docker compose up -d
 | `docker/mssql/init/01-create-database.sql` | Создание БД `MSCRM_EXT` |
 | `docker/mssql/init/02-create-tables.sql` | Таблицы `ExportMessageRabbitKKA`, `ExportMessageRabbitKKAStatus`, `ExportMessageRabbitStatusName` |
 | `docker/mssql/init/03-seed-status-names.sql` | Справочник статусов: Ready, InProcessed, Send, Close, Error |
+| `docker/mssql/init/04-seed-rabbit-integration-operation-keys.sql` | Конфигурация интеграций Rabbit (7 записей) |
 
 Проверка:
 
@@ -97,6 +98,8 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-05-26 | Seed `RabbitIntegrationOperationKeysConfiguration` (7 операций KKA/1C) |
+| 2026-05-26 | Таблица `RabbitIntegrationOperationKeysConfiguration` (SQL + EF) |
 | 2026-05-26 | Проект `VTBL.ExportMessage.Rabbit.Context` (EF Core 5, `MscrmExtDbContext`) |
 | 2026-05-26 | Web UI: страница Debug — загрузка `ExportMessageRabbitStatusName` из БД |
 | 2026-05-26 | MSSQL: именованный том + `E:\volumes\...\backup` (обход LSA на Windows) |

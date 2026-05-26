@@ -16,6 +16,8 @@ namespace VTBL.ExportMessage.Rabbit.Context
 
         public DbSet<ExportMessageRabbitStatusName> ExportMessageRabbitStatusNames { get; set; } = null!;
 
+        public DbSet<RabbitIntegrationOperationKeysConfiguration> RabbitIntegrationOperationKeysConfigurations { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ExportMessageRabbitKka>(entity =>
@@ -57,6 +59,23 @@ namespace VTBL.ExportMessage.Rabbit.Context
                 entity.HasNoKey();
 
                 entity.Property(e => e.StatusName).HasMaxLength(100).IsRequired();
+            });
+
+            modelBuilder.Entity<RabbitIntegrationOperationKeysConfiguration>(entity =>
+            {
+                entity.ToTable("RabbitIntegrationOperationKeysConfiguration");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).HasDefaultValueSql("newid()").ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Key).HasColumnName("Key").HasColumnType("nvarchar(max)").IsRequired();
+
+                entity.Property(e => e.PackageBuilderURL).HasColumnType("nvarchar(max)").IsRequired();
+
+                entity.Property(e => e.SendPackageRabbitExchange).HasColumnType("nvarchar(max)").IsRequired();
+
+                entity.Property(e => e.SendPackageRabbitRoutingkey).HasColumnType("nvarchar(max)").IsRequired();
             });
         }
     }

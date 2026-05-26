@@ -65,3 +65,25 @@ END
 ELSE
     PRINT N'Table dbo.ExportMessageRabbitStatusName already exists.';
 GO
+
+IF OBJECT_ID(N'dbo.RabbitIntegrationOperationKeysConfiguration', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[RabbitIntegrationOperationKeysConfiguration](
+        [Id] [uniqueidentifier] NOT NULL,
+        [Key] [nvarchar](max) NOT NULL,
+        [PackageBuilderURL] [nvarchar](max) NOT NULL,
+        [SendPackageRabbitExchange] [nvarchar](max) NOT NULL,
+        [SendPackageRabbitRoutingkey] [nvarchar](max) NOT NULL,
+     CONSTRAINT [PK_RabbitIntegrationOperationKeysConfiguration] PRIMARY KEY CLUSTERED
+    (
+        [Id] ASC
+    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+
+    ALTER TABLE [dbo].[RabbitIntegrationOperationKeysConfiguration] ADD DEFAULT (newid()) FOR [Id];
+
+    PRINT N'Table dbo.RabbitIntegrationOperationKeysConfiguration created.';
+END
+ELSE
+    PRINT N'Table dbo.RabbitIntegrationOperationKeysConfiguration already exists.';
+GO
