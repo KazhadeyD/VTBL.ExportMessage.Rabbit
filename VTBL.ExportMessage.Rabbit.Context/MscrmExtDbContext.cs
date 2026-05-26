@@ -33,6 +33,13 @@ namespace VTBL.ExportMessage.Rabbit.Context
                 entity.Property(e => e.Endpoint).HasMaxLength(100).IsRequired();
 
                 entity.Property(e => e.Body).HasColumnType("nvarchar(max)");
+
+                // Логическая связь OperationKey -> RabbitIntegrationOperationKeysConfiguration.Key без FK в БД.
+                entity.HasOne(e => e.OperationConfiguration)
+                    .WithMany(c => c.ExportMessages)
+                    .HasForeignKey(e => e.OperationKey)
+                    .HasPrincipalKey(c => c.Key)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<ExportMessageRabbitKkaStatus>(entity =>
@@ -50,6 +57,13 @@ namespace VTBL.ExportMessage.Rabbit.Context
                 entity.Property(e => e.SendMessage).HasColumnType("nvarchar(max)");
 
                 entity.Property(e => e.RowVersion).IsRowVersion();
+
+                // Логическая связь IntegrationId -> ExportMessageRabbitKKA.Id без FK в БД.
+                entity.HasOne(e => e.Integration)
+                    .WithMany(k => k.StatusHistory)
+                    .HasForeignKey(e => e.IntegrationId)
+                    .HasPrincipalKey(k => k.Id)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<ExportMessageRabbitStatusName>(entity =>
@@ -70,6 +84,8 @@ namespace VTBL.ExportMessage.Rabbit.Context
                 entity.Property(e => e.Id).HasDefaultValueSql("newid()").ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Key).HasColumnName("Key").HasColumnType("nvarchar(max)").IsRequired();
+
+                entity.HasAlternateKey(e => e.Key);
 
                 entity.Property(e => e.PackageBuilderURL).HasColumnType("nvarchar(max)").IsRequired();
 

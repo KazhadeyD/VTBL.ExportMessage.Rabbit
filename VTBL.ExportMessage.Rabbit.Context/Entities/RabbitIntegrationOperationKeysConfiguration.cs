@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VTBL.ExportMessage.Rabbit.Context.Entities
@@ -15,5 +16,11 @@ namespace VTBL.ExportMessage.Rabbit.Context.Entities
         public string SendPackageRabbitExchange { get; set; } = string.Empty;
 
         public string SendPackageRabbitRoutingkey { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Сообщения с этим ключом операции (FK в БД нет).
+        /// </summary>
+        public ICollection<ExportMessageRabbitKka> ExportMessages { get; set; }
+            = new List<ExportMessageRabbitKka>();
     }
 }

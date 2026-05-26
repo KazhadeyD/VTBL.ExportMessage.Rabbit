@@ -9,6 +9,11 @@ namespace VTBL.ExportMessage.Rabbit.Context.Entities
 
         public Guid IntegrationId { get; set; }
 
+        /// <summary>
+        /// Сообщение интеграции (<see cref="ExportMessageRabbitKka.Id"/> = <see cref="IntegrationId"/>).
+        /// </summary>
+        public ExportMessageRabbitKka Integration { get; set; }
+
         public int? StatusId { get; set; }
 
         public DateTime Created { get; set; }
