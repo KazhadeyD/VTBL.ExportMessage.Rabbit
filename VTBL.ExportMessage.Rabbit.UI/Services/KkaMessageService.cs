@@ -20,9 +20,23 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
         public async Task<KkaMessagesPageResult> GetMessagesPageAsync(
             int page,
             int pageSize,
+            KkaMessageFilter filter = null,
             CancellationToken cancellationToken = default)
         {
             var query = _dbContext.ExportMessageRabbitKkas.AsNoTracking();
+
+            if (filter != null)
+            {
+                if (filter.HasId)
+                {
+                    query = query.Where(k => k.Id == filter.Id.Value);
+                }
+
+                if (filter.HasOperationKey)
+                {
+                    query = query.Where(k => k.OperationKey == filter.OperationKey);
+                }
+            }
 
             var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
 
@@ -61,6 +75,17 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 .ConfigureAwait(false);
 
             return statusNames.ToDictionary(s => s.Id.Value, s => s.StatusName);
+        }
+
+        public async Task<IReadOnlyList<string>> GetOperationKeysAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.RabbitIntegrationOperationKeysConfigurations
+                .AsNoTracking()
+                .OrderBy(c => c.Key)
+                .Select(c => c.Key)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
         }
     }
 }

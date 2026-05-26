@@ -10,9 +10,13 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
         Task<KkaMessagesPageResult> GetMessagesPageAsync(
             int page,
             int pageSize,
+            KkaMessageFilter filter = null,
             CancellationToken cancellationToken = default);
 
         Task<IReadOnlyDictionary<int, string>> GetStatusNameMapAsync(
+            CancellationToken cancellationToken = default);
+
+        Task<IReadOnlyList<string>> GetOperationKeysAsync(
             CancellationToken cancellationToken = default);
     }
 }

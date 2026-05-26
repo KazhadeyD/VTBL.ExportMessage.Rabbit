@@ -142,6 +142,28 @@ body {
   background-color: #fafafa;
 }
 
+.kka-filters-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.kka-page__filters {
+  min-width: 0;
+}
+
+.kka-filters-form {
+  max-width: 100%;
+}
+
+.kka-filter-id-input {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.8125rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .kka-results__summary {
   margin-bottom: 1rem;
 }
