@@ -1,0 +1,10 @@
+SET NOCOUNT ON;
+
+IF DB_ID(N'MSCRM_EXT') IS NULL
+BEGIN
+    CREATE DATABASE MSCRM_EXT;
+    PRINT N'Database MSCRM_EXT created.';
+END
+ELSE
+    PRINT N'Database MSCRM_EXT already exists.';
+GO
