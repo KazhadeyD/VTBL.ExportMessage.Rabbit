@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VTBL.ExportMessage.Rabbit.Context;
-using VTBL.ExportMessage.Rabbit.Context.Entities;
+using VTBL.ExportMessage.Rabbit.UI.Models;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Services
 {
@@ -17,14 +17,21 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IReadOnlyList<ExportMessageRabbitKka>> GetMessagesGroupedByIdAsync(
+        public async Task<KkaMessagesPageResult> GetMessagesPageAsync(
+            int page,
+            int pageSize,
             CancellationToken cancellationToken = default)
         {
-            var messages = await _dbContext.ExportMessageRabbitKkas
-                .AsNoTracking()
+            var query = _dbContext.ExportMessageRabbitKkas.AsNoTracking();
+
+            var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
+
+            var messages = await query
                 .Include(k => k.StatusHistory)
                 .Include(k => k.OperationConfiguration)
                 .OrderByDescending(k => k.Created)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -35,7 +42,13 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                     .ToList();
             }
 
-            return messages;
+            return new KkaMessagesPageResult
+            {
+                Items = messages,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+            };
         }
 
         public async Task<IReadOnlyDictionary<int, string>> GetStatusNameMapAsync(

@@ -138,7 +138,14 @@ body {
   border-radius: 0.25rem;
 }
 
-.kka-message-group__error {
-  max-width: 16rem;
-  word-break: break-word;
+.kka-status-expand-row td {
+  background-color: #fafafa;
+}
+
+.kka-results__summary {
+  margin-bottom: 1rem;
+}
+
+.kka-pagination .page-item.active .page-link {
+  z-index: 1;
 }

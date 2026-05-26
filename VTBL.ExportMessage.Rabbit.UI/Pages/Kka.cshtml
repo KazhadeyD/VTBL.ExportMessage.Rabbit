@@ -23,9 +23,9 @@
             <div class="card kka-panel h-100">
                 <div class="card-header kka-panel__header d-flex justify-content-between align-items-center">
                     <h2 class="kka-panel__title mb-0">Результаты</h2>
-                    @if (string.IsNullOrEmpty(Model.ErrorMessage))
+                    @if (string.IsNullOrEmpty(Model.ErrorMessage) && Model.TotalCount > 0)
                     {
-                        <span class="badge badge-secondary">@Model.MessageGroups.Count</span>
+                        <span class="badge badge-secondary" title="Всего сообщений">@Model.TotalCount</span>
                     }
                 </div>
                 <div class="card-body kka-panel__body kka-results">
@@ -33,12 +33,19 @@
                     {
                         <div class="alert alert-danger mb-0" role="alert">@Model.ErrorMessage</div>
                     }
-                    else if (Model.MessageGroups.Count == 0)
+                    else if (Model.TotalCount == 0)
                     {
                         <p class="text-muted mb-0">Сообщений нет.</p>
                     }
                     else
                     {
+                        @if (Model.TotalPages > 1)
+                        {
+                            <partial name="_KkaPagination" model="Model" />
+                        }
+                        <p class="text-muted small kka-results__summary">
+                            Показано @Model.RangeFrom–@Model.RangeTo из @Model.TotalCount
+                        </p>
                         @foreach (var message in Model.MessageGroups)
                         {
                             <article class="kka-message-group" id="message-@message.Id">
@@ -87,7 +94,6 @@
                                                     <th>Created</th>
                                                     <th>Status</th>
                                                     <th>ProcessingId</th>
-                                                    <th>Error</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -97,14 +103,39 @@
                                                         <td>@status.Created.ToString("yyyy-MM-dd HH:mm:ss")</td>
                                                         <td>@Model.ResolveStatusName(status.StatusId)</td>
                                                         <td>@(status.ProcessingId?.ToString() ?? "—")</td>
-                                                        <td class="kka-message-group__error">@(string.IsNullOrEmpty(status.ErrorMessage) ? "—" : status.ErrorMessage)</td>
                                                     </tr>
+                                                    @if (!string.IsNullOrEmpty(status.SendMessage))
+                                                    {
+                                                        <tr class="kka-status-expand-row">
+                                                            <td colspan="3" class="pt-0">
+                                                                <details class="kka-message-group__body-details">
+                                                                    <summary class="small text-primary">SendMessage</summary>
+                                                                    <pre class="kka-message-group__body small mb-0 mt-2">@status.SendMessage</pre>
+                                                                </details>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    @if (!string.IsNullOrEmpty(status.ErrorMessage))
+                                                    {
+                                                        <tr class="kka-status-expand-row">
+                                                            <td colspan="3" class="pt-0">
+                                                                <details class="kka-message-group__body-details">
+                                                                    <summary class="small text-danger">Error</summary>
+                                                                    <pre class="kka-message-group__body small mb-0 mt-2">@status.ErrorMessage</pre>
+                                                                </details>
+                                                            </td>
+                                                        </tr>
+                                                    }
                                                 }
                                             </tbody>
                                         </table>
                                     }
                                 </div>
                             </article>
+                        }
+                        @if (Model.TotalPages > 1)
+                        {
+                            <partial name="_KkaPagination" model="Model" />
                         }
                     }
                 </div>
