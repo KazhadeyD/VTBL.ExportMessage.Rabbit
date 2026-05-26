@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using VTBL.ExportMessage.Rabbit.UI.Models;
+using VTBL.ExportMessage.Rabbit.Context.Entities;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Services
 {

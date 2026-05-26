@@ -88,14 +88,16 @@ docker compose down          # контейнеры остановлены, да
 
 ```
 docker-compose.yml
-docker/mssql/init/          # SQL-скрипты инициализации
-VTBL.ExportMessage.Rabbit.UI/   # ASP.NET Core Razor Pages
+docker/mssql/init/                    # SQL-скрипты инициализации
+VTBL.ExportMessage.Rabbit.Context/    # EF Core, сущности, MscrmExtDbContext
+VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 ```
 
 ## История изменений
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-05-26 | Проект `VTBL.ExportMessage.Rabbit.Context` (EF Core 5, `MscrmExtDbContext`) |
 | 2026-05-26 | Web UI: страница Debug — загрузка `ExportMessageRabbitStatusName` из БД |
 | 2026-05-26 | MSSQL: именованный том + `E:\volumes\...\backup` (обход LSA на Windows) |
 | 2026-05-26 | Seed `ExportMessageRabbitStatusName` (Ready, InProcessed, Send, Close, Error) |

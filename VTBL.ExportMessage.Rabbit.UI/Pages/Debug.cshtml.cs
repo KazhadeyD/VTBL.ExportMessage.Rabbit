@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using VTBL.ExportMessage.Rabbit.UI.Models;
+using VTBL.ExportMessage.Rabbit.Context.Entities;
 using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages

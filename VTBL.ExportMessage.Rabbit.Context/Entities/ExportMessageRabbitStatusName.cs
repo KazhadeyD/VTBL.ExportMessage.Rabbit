@@ -1,4 +1,4 @@
-namespace VTBL.ExportMessage.Rabbit.UI.Models
+namespace VTBL.ExportMessage.Rabbit.Context.Entities
 {
     public class ExportMessageRabbitStatusName
     {

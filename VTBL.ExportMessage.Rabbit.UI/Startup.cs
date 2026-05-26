@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VTBL.ExportMessage.Rabbit.Context;
 using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI
@@ -20,7 +21,8 @@ namespace VTBL.ExportMessage.Rabbit.UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddSingleton<IExportMessageRabbitStatusNameService, ExportMessageRabbitStatusNameService>();
+            services.AddMscrmExtContext(Configuration);
+            services.AddScoped<IExportMessageRabbitStatusNameService, ExportMessageRabbitStatusNameService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
