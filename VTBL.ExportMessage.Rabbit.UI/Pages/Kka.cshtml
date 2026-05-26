@@ -1,0 +1,114 @@
+@page
+@model KkaModel
+@{
+    ViewData["Title"] = "ККА";
+}
+
+<div class="kka-page">
+    <h1 class="kka-page__title">ККА</h1>
+
+    <div class="row kka-page__layout">
+        <aside class="col-lg-4 col-xl-3 kka-page__filters mb-3 mb-lg-0">
+            <div class="card kka-panel h-100">
+                <div class="card-header kka-panel__header">
+                    <h2 class="kka-panel__title mb-0">Фильтры</h2>
+                </div>
+                <div class="card-body kka-panel__body">
+                    <p class="text-muted mb-0 kka-panel__placeholder">Содержимое панели фильтров будет добавлено позже.</p>
+                </div>
+            </div>
+        </aside>
+
+        <section class="col-lg-8 col-xl-9 kka-page__results">
+            <div class="card kka-panel h-100">
+                <div class="card-header kka-panel__header d-flex justify-content-between align-items-center">
+                    <h2 class="kka-panel__title mb-0">Результаты</h2>
+                    @if (string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <span class="badge badge-secondary">@Model.MessageGroups.Count</span>
+                    }
+                </div>
+                <div class="card-body kka-panel__body kka-results">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger mb-0" role="alert">@Model.ErrorMessage</div>
+                    }
+                    else if (Model.MessageGroups.Count == 0)
+                    {
+                        <p class="text-muted mb-0">Сообщений нет.</p>
+                    }
+                    else
+                    {
+                        @foreach (var message in Model.MessageGroups)
+                        {
+                            <article class="kka-message-group" id="message-@message.Id">
+                                <header class="kka-message-group__header">
+                                    <h3 class="kka-message-group__id mb-1">
+                                        <span class="text-muted">Id:</span> @message.Id
+                                    </h3>
+                                    <dl class="row kka-message-group__meta mb-0 small">
+                                        <dt class="col-sm-3 col-md-2">OperationKey</dt>
+                                        <dd class="col-sm-9 col-md-4">@message.OperationKey</dd>
+                                        <dt class="col-sm-3 col-md-2">Endpoint</dt>
+                                        <dd class="col-sm-9 col-md-4">@message.Endpoint</dd>
+                                        <dt class="col-sm-3 col-md-2">Created</dt>
+                                        <dd class="col-sm-9 col-md-4">@message.Created.ToString("yyyy-MM-dd HH:mm:ss")</dd>
+                                        <dt class="col-sm-3 col-md-2">MessageId</dt>
+                                        <dd class="col-sm-9 col-md-4">@(message.MessageId?.ToString() ?? "—")</dd>
+                                        @if (message.OperationConfiguration != null)
+                                        {
+                                            <dt class="col-sm-3 col-md-2">Exchange</dt>
+                                            <dd class="col-sm-9 col-md-4">@message.OperationConfiguration.SendPackageRabbitExchange</dd>
+                                            <dt class="col-sm-3 col-md-2">Routing key</dt>
+                                            <dd class="col-sm-9 col-md-4">@message.OperationConfiguration.SendPackageRabbitRoutingkey</dd>
+                                        }
+                                    </dl>
+                                </header>
+
+                                @if (!string.IsNullOrEmpty(message.Body))
+                                {
+                                    <details class="kka-message-group__body-details mb-2">
+                                        <summary class="small text-primary">Body</summary>
+                                        <pre class="kka-message-group__body small mb-0 mt-2">@message.Body</pre>
+                                    </details>
+                                }
+
+                                <div class="kka-message-group__statuses">
+                                    <h4 class="h6 text-muted mb-2">Статусы (@message.StatusHistory.Count)</h4>
+                                    @if (message.StatusHistory.Count == 0)
+                                    {
+                                        <p class="text-muted small mb-0">Записей статуса нет.</p>
+                                    }
+                                    else
+                                    {
+                                        <table class="table table-sm table-bordered mb-0">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Created</th>
+                                                    <th>Status</th>
+                                                    <th>ProcessingId</th>
+                                                    <th>Error</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var status in message.StatusHistory)
+                                                {
+                                                    <tr>
+                                                        <td>@status.Created.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                                        <td>@Model.ResolveStatusName(status.StatusId)</td>
+                                                        <td>@(status.ProcessingId?.ToString() ?? "—")</td>
+                                                        <td class="kka-message-group__error">@(string.IsNullOrEmpty(status.ErrorMessage) ? "—" : status.ErrorMessage)</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                            </article>
+                        }
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

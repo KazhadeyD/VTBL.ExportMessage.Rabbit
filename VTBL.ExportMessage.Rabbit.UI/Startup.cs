@@ -23,6 +23,7 @@ namespace VTBL.ExportMessage.Rabbit.UI
             services.AddRazorPages();
             services.AddMscrmExtContext(Configuration);
             services.AddScoped<IExportMessageRabbitStatusNameService, ExportMessageRabbitStatusNameService>();
+            services.AddScoped<IKkaMessageService, KkaMessageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

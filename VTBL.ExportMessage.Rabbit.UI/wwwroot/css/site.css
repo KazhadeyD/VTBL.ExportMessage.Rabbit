@@ -69,3 +69,76 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/* KKA page */
+.kka-page__title {
+  margin-bottom: 1.25rem;
+}
+
+.kka-page__layout {
+  min-height: 28rem;
+}
+
+.kka-panel {
+  border-color: #dee2e6;
+}
+
+.kka-panel__header {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.kka-panel__title {
+  font-size: 1.1rem;
+}
+
+.kka-panel__body {
+  min-height: 20rem;
+}
+
+.kka-panel__placeholder {
+  font-size: 0.95rem;
+}
+
+.kka-results {
+  max-height: calc(100vh - 12rem);
+  overflow-y: auto;
+}
+
+.kka-message-group {
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+}
+
+.kka-message-group:last-child {
+  margin-bottom: 0;
+}
+
+.kka-message-group__header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.kka-message-group__id {
+  font-size: 1rem;
+  word-break: break-all;
+}
+
+.kka-message-group__body {
+  max-height: 12rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background-color: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.kka-message-group__error {
+  max-width: 16rem;
+  word-break: break-word;
+}
