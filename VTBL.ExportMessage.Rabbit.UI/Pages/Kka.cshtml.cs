@@ -29,6 +29,12 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         [BindProperty(SupportsGet = true, Name = "operationKey")]
         public string FilterOperationKey { get; set; }
 
+        [BindProperty(SupportsGet = true, Name = "hasError")]
+        public bool FilterHasError { get; set; }
+
+        [BindProperty(SupportsGet = true, Name = "hasSendMessage")]
+        public bool FilterHasSendMessage { get; set; }
+
         public IReadOnlyList<ExportMessageRabbitKka> MessageGroups { get; private set; }
             = Array.Empty<ExportMessageRabbitKka>();
 
@@ -67,6 +73,10 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         public string FilterOperationKeyForRoute =>
             string.IsNullOrWhiteSpace(FilterOperationKey) ? null : FilterOperationKey.Trim();
+
+        public bool? FilterHasErrorForRoute => FilterHasError ? true : (bool?)null;
+
+        public bool? FilterHasSendMessageForRoute => FilterHasSendMessage ? true : (bool?)null;
 
         public async System.Threading.Tasks.Task OnGetAsync(int pageNumber = 1)
         {
@@ -144,13 +154,17 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             var hasId = !string.IsNullOrWhiteSpace(FilterId);
             var hasOperationKey = !string.IsNullOrWhiteSpace(FilterOperationKey);
 
-            if (!hasId && !hasOperationKey)
+            if (!hasId && !hasOperationKey && !FilterHasError && !FilterHasSendMessage)
             {
                 return true;
             }
 
             HasActiveFilter = true;
-            filter = new KkaMessageFilter();
+            filter = new KkaMessageFilter
+            {
+                WithError = FilterHasError,
+                WithSendMessage = FilterHasSendMessage,
+            };
 
             if (hasId)
             {

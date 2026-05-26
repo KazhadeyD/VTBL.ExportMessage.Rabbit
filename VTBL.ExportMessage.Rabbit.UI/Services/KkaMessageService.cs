@@ -36,6 +36,18 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 {
                     query = query.Where(k => k.OperationKey == filter.OperationKey);
                 }
+
+                if (filter.WithError)
+                {
+                    query = query.Where(k => k.StatusHistory.Any(s =>
+                        s.ErrorMessage != null && s.ErrorMessage != string.Empty));
+                }
+
+                if (filter.WithSendMessage)
+                {
+                    query = query.Where(k => k.StatusHistory.Any(s =>
+                        s.SendMessage != null && s.SendMessage != string.Empty));
+                }
             }
 
             var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
