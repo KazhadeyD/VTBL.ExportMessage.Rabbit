@@ -9,19 +9,27 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
     public class IndexModel : PageModel
     {
         private readonly IKkaMessageService _kkaMessageService;
+        private readonly INovaMessageService _novaMessageService;
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(IKkaMessageService kkaMessageService, ILogger<IndexModel> logger)
+        public IndexModel(
+            IKkaMessageService kkaMessageService,
+            INovaMessageService novaMessageService,
+            ILogger<IndexModel> logger)
         {
             _kkaMessageService = kkaMessageService;
+            _novaMessageService = novaMessageService;
             _logger = logger;
         }
 
-        public KkaDashboardStats DashboardStats { get; private set; } = new KkaDashboardStats();
+        public IntegrationDashboardStats KkaStats { get; private set; } = new IntegrationDashboardStats();
+
+        public IntegrationDashboardStats NovaStats { get; private set; } = new IntegrationDashboardStats();
 
         public async Task OnGetAsync()
         {
-            DashboardStats = await _kkaMessageService.GetDashboardStatsAsync().ConfigureAwait(false);
+            KkaStats = await _kkaMessageService.GetDashboardStatsAsync().ConfigureAwait(false);
+            NovaStats = await _novaMessageService.GetDashboardStatsAsync().ConfigureAwait(false);
         }
     }
 }

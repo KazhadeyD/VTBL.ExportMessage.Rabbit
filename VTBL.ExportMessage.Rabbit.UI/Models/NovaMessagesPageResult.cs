@@ -2,7 +2,7 @@ using VTBL.ExportMessage.Rabbit.Context.Entities;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Models
 {
-    public class KkaMessagesPageResult : IntegrationMessagesPageResult<ExportMessageRabbitKka>
+    public class NovaMessagesPageResult : IntegrationMessagesPageResult<ExportMessageRabbitNova>
     {
     }
 }

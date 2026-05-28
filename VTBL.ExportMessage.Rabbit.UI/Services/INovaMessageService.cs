@@ -5,12 +5,12 @@ using VTBL.ExportMessage.Rabbit.UI.Models;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Services
 {
-    public interface IKkaMessageService : IIntegrationMessageService<ExportMessageRabbitKka>
+    public interface INovaMessageService : IIntegrationMessageService<ExportMessageRabbitNova>
     {
-        Task<KkaMessagesPageResult> GetMessagesPageAsync(
+        Task<NovaMessagesPageResult> GetMessagesPageAsync(
             int page,
             int pageSize,
-            KkaMessageFilter filter = null,
+            NovaMessageFilter filter = null,
             CancellationToken cancellationToken = default);
     }
 }

@@ -15,17 +15,18 @@
         <h2 class="h5 mb-3">Что делать дальше</h2>
         <ol class="mb-4">
             <li>Перейдите в раздел <strong>ККА</strong>.</li>
+            <li>Для новой интеграции используйте раздел <strong>NOVA</strong>.</li>
             <li>Задайте фильтры: <code>Id</code>, <code>OperationKey</code>, наличие <code>Error</code> или <code>SendMessage</code>.</li>
             <li>Откройте найденную запись и проверьте Body, историю статусов и детали ошибок.</li>
         </ol>
 
-        <h2 class="h5 mb-3">Сводка по сообщениям</h2>
+        <h2 class="h5 mb-3">Сводка по KKA</h2>
         <div class="row mb-4">
             <div class="col-md-4 mb-2 mb-md-0">
                 <div class="card h-100 border-info">
                     <div class="card-body">
                         <div class="text-muted small">Всего записей</div>
-                        <div class="h3 mb-0">@Model.DashboardStats.Total</div>
+                        <div class="h3 mb-0">@Model.KkaStats.Total</div>
                     </div>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                 <div class="card h-100 border-success">
                     <div class="card-body">
                         <div class="text-muted small">Успешных (без Error)</div>
-                        <div class="h3 mb-0 text-success">@Model.DashboardStats.Successful</div>
+                        <div class="h3 mb-0 text-success">@Model.KkaStats.Successful</div>
                     </div>
                 </div>
             </div>
@@ -41,7 +42,35 @@
                 <div class="card h-100 border-danger">
                     <div class="card-body">
                         <div class="text-muted small">Неуспешных (есть Error)</div>
-                        <div class="h3 mb-0 text-danger">@Model.DashboardStats.Failed</div>
+                        <div class="h3 mb-0 text-danger">@Model.KkaStats.Failed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="h5 mb-3">Сводка по NOVA</h2>
+        <div class="row mb-4">
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="card h-100 border-info">
+                    <div class="card-body">
+                        <div class="text-muted small">Всего записей</div>
+                        <div class="h3 mb-0">@Model.NovaStats.Total</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="card h-100 border-success">
+                    <div class="card-body">
+                        <div class="text-muted small">Успешных (без Error)</div>
+                        <div class="h3 mb-0 text-success">@Model.NovaStats.Successful</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-danger">
+                    <div class="card-body">
+                        <div class="text-muted small">Неуспешных (есть Error)</div>
+                        <div class="h3 mb-0 text-danger">@Model.NovaStats.Failed</div>
                     </div>
                 </div>
             </div>
@@ -49,6 +78,7 @@
 
         <div class="d-flex flex-wrap">
             <a asp-page="/Kka" class="btn btn-primary mr-2 mb-2">Перейти в ККА</a>
+            <a asp-page="/Nova" class="btn btn-primary mr-2 mb-2">Перейти в NOVA</a>
             <a asp-page="/Debug" class="btn btn-outline-secondary mb-2">Открыть Debug</a>
         </div>
     </div>

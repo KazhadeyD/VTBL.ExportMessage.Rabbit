@@ -24,7 +24,7 @@ docker compose up -d
 | Скрипт | Назначение |
 |--------|------------|
 | `docker/mssql/init/01-create-database.sql` | Создание БД `MSCRM_EXT` |
-| `docker/mssql/init/02-create-tables.sql` | Таблицы `ExportMessageRabbitKKA`, `ExportMessageRabbitKKAStatus`, `ExportMessageRabbitStatusName` |
+| `docker/mssql/init/02-create-tables.sql` | Таблицы `ExportMessageRabbitKKA`, `ExportMessageRabbitKKAStatus`, `ExportMessageRabbitNOVA`, `ExportMessageRabbitNOVAStatus`, `ExportMessageRabbitStatusName` |
 | `docker/mssql/init/03-seed-status-names.sql` | Справочник статусов: Ready, InProcessed, Send, Close, Error |
 | `docker/mssql/init/04-seed-rabbit-integration-operation-keys.sql` | Конфигурация интеграций Rabbit (7 записей) |
 
@@ -94,10 +94,33 @@ VTBL.ExportMessage.Rabbit.Context/    # EF Core, сущности, MscrmExtDbCon
 VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 ```
 
+## Добавление новой системы (по шаблону KKA/NOVA)
+
+Архитектура подготовлена для расширения на следующие интеграции с тем же устройством (например, третья система после NOVA).
+
+1. Добавьте сущности в `VTBL.ExportMessage.Rabbit.Context/Entities`:
+   - `ExportMessageRabbit<System>.cs`
+   - `ExportMessageRabbit<System>Status.cs`
+2. Зарегистрируйте `DbSet` и Fluent API в `MscrmExtDbContext`.
+3. Добавьте SQL-таблицы в `docker/mssql/init/02-create-tables.sql` по образцу KKA/NOVA.
+4. Создайте UI-модели фильтра/результата:
+   - `VTBL.ExportMessage.Rabbit.UI/Models/<System>MessageFilter.cs`
+   - `VTBL.ExportMessage.Rabbit.UI/Models/<System>MessagesPageResult.cs`
+5. Создайте сервис:
+   - `I<System>MessageService` + `<System>MessageService`
+   - Реализация наследуется от `IntegrationMessageServiceBase<TMessage, TStatus>`.
+6. Добавьте Razor Pages:
+   - `Pages/<System>.cshtml`
+   - `Pages/<System>.cshtml.cs` (реализует `IIntegrationPagingModel`)
+7. Подключите DI в `Startup.cs` и пункт меню в `_Layout.cshtml`.
+8. Для пагинации используйте общий partial `Pages/Shared/_IntegrationPagination.cshtml`.
+
 ## История изменений
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-05-28 | Добавлен раздел NOVA (таблицы SQL, EF-сущности, сервисы, Razor Pages, навигация) |
+| 2026-05-28 | Вынесен общий каркас integration-систем: `IntegrationMessageServiceBase`, общие модели фильтра/пагинации/статистики, общий partial пагинации |
 | 2026-05-26 | Seed `RabbitIntegrationOperationKeysConfiguration` (7 операций KKA/1C) |
 | 2026-05-26 | Таблица `RabbitIntegrationOperationKeysConfiguration` (SQL + EF) |
 | 2026-05-26 | Проект `VTBL.ExportMessage.Rabbit.Context` (EF Core 5, `MscrmExtDbContext`) |

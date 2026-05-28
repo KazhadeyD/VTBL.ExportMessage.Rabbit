@@ -9,24 +9,24 @@ using VTBL.ExportMessage.Rabbit.UI.Models;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Services
 {
-    public class KkaMessageService : IntegrationMessageServiceBase<ExportMessageRabbitKka, ExportMessageRabbitKkaStatus>, IKkaMessageService
+    public class NovaMessageService : IntegrationMessageServiceBase<ExportMessageRabbitNova, ExportMessageRabbitNovaStatus>, INovaMessageService
     {
-        public KkaMessageService(MscrmExtDbContext dbContext)
+        public NovaMessageService(MscrmExtDbContext dbContext)
             : base(dbContext)
         {
         }
 
-        public async Task<KkaMessagesPageResult> GetMessagesPageAsync(
+        public async Task<NovaMessagesPageResult> GetMessagesPageAsync(
             int page,
             int pageSize,
-            KkaMessageFilter filter = null,
+            NovaMessageFilter filter = null,
             CancellationToken cancellationToken = default)
         {
-            var result = await ((IIntegrationMessageService<ExportMessageRabbitKka>)this)
+            var result = await ((IIntegrationMessageService<ExportMessageRabbitNova>)this)
                 .GetMessagesPageAsync(page, pageSize, filter, cancellationToken)
                 .ConfigureAwait(false);
 
-            return new KkaMessagesPageResult
+            return new NovaMessagesPageResult
             {
                 Items = result.Items,
                 TotalCount = result.TotalCount,
@@ -35,42 +35,42 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             };
         }
 
-        protected override IQueryable<ExportMessageRabbitKka> BuildBaseQuery()
+        protected override IQueryable<ExportMessageRabbitNova> BuildBaseQuery()
         {
-            return DbContext.ExportMessageRabbitKkas
+            return DbContext.ExportMessageRabbitNovas
                 .AsNoTracking()
                 .Include(k => k.StatusHistory)
                 .Include(k => k.OperationConfiguration);
         }
 
-        protected override IQueryable<ExportMessageRabbitKka> ApplyMessageOrdering(IQueryable<ExportMessageRabbitKka> query)
+        protected override IQueryable<ExportMessageRabbitNova> ApplyMessageOrdering(IQueryable<ExportMessageRabbitNova> query)
         {
             return query.OrderByDescending(k => k.Created);
         }
 
-        protected override IQueryable<ExportMessageRabbitKka> ApplyIdFilter(IQueryable<ExportMessageRabbitKka> query, Guid id)
+        protected override IQueryable<ExportMessageRabbitNova> ApplyIdFilter(IQueryable<ExportMessageRabbitNova> query, Guid id)
         {
             return query.Where(k => k.Id == id);
         }
 
-        protected override IQueryable<ExportMessageRabbitKka> ApplyOperationKeyFilter(IQueryable<ExportMessageRabbitKka> query, string operationKey)
+        protected override IQueryable<ExportMessageRabbitNova> ApplyOperationKeyFilter(IQueryable<ExportMessageRabbitNova> query, string operationKey)
         {
             return query.Where(k => k.OperationKey == operationKey);
         }
 
-        protected override IQueryable<ExportMessageRabbitKka> ApplyWithErrorFilter(IQueryable<ExportMessageRabbitKka> query)
+        protected override IQueryable<ExportMessageRabbitNova> ApplyWithErrorFilter(IQueryable<ExportMessageRabbitNova> query)
         {
             return query.Where(k => k.StatusHistory.Any(s =>
                 s.ErrorMessage != null && s.ErrorMessage != string.Empty));
         }
 
-        protected override IQueryable<ExportMessageRabbitKka> ApplyWithSendMessageFilter(IQueryable<ExportMessageRabbitKka> query)
+        protected override IQueryable<ExportMessageRabbitNova> ApplyWithSendMessageFilter(IQueryable<ExportMessageRabbitNova> query)
         {
             return query.Where(k => k.StatusHistory.Any(s =>
                 s.SendMessage != null && s.SendMessage != string.Empty));
         }
 
-        protected override void SortMessageStatuses(ExportMessageRabbitKka message)
+        protected override void SortMessageStatuses(ExportMessageRabbitNova message)
         {
             message.StatusHistory = message.StatusHistory
                 .OrderBy(s => s.Created)

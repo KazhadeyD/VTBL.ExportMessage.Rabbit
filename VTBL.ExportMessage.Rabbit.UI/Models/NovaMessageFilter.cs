@@ -1,6 +1,6 @@
 namespace VTBL.ExportMessage.Rabbit.UI.Models
 {
-    public class KkaMessageFilter : IntegrationMessageFilter
+    public class NovaMessageFilter : IntegrationMessageFilter
     {
     }
 }

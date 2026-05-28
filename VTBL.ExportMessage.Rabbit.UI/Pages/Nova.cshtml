@@ -1,12 +1,12 @@
 @page
-@model KkaModel
+@model NovaModel
 @{
-    ViewData["Title"] = "ККА";
+    ViewData["Title"] = "NOVA";
     ViewData["MainContainerClass"] = "container-fluid";
 }
 
 <div class="kka-page">
-    <h1 class="kka-page__title">ККА</h1>
+    <h1 class="kka-page__title">NOVA</h1>
 
     <div class="row kka-page__layout">
         <aside class="col-lg-5 col-xl-4 kka-page__filters mb-3 mb-lg-0">
@@ -15,7 +15,7 @@
                     <h2 class="kka-panel__title mb-0">Фильтры</h2>
                 </div>
                 <div class="card-body kka-panel__body">
-                    <form method="get" asp-page="Kka" class="kka-filters-form">
+                    <form method="get" asp-page="Nova" class="kka-filters-form">
                         <div class="form-group">
                             <label for="filter-id">Id</label>
                             <input type="text"
@@ -80,7 +80,7 @@
                         </div>
                         <div class="d-flex flex-wrap">
                             <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2">Применить</button>
-                            <a asp-page="Kka" class="btn btn-outline-secondary btn-sm mb-2">Сбросить</a>
+                            <a asp-page="Nova" class="btn btn-outline-secondary btn-sm mb-2">Сбросить</a>
                         </div>
                     </form>
                 </div>

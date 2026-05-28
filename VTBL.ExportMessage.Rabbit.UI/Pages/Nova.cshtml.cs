@@ -4,22 +4,23 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using VTBL.ExportMessage.Rabbit.Context.Entities;
 using VTBL.ExportMessage.Rabbit.UI.Models;
 using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
-    public class KkaModel : PageModel, IIntegrationPagingModel
+    public class NovaModel : PageModel, IIntegrationPagingModel
     {
         public const int DefaultPageSize = 20;
 
-        private readonly IKkaMessageService _kkaMessageService;
-        private readonly ILogger<KkaModel> _logger;
+        private readonly INovaMessageService _novaMessageService;
+        private readonly ILogger<NovaModel> _logger;
 
-        public KkaModel(IKkaMessageService kkaMessageService, ILogger<KkaModel> logger)
+        public NovaModel(INovaMessageService novaMessageService, ILogger<NovaModel> logger)
         {
-            _kkaMessageService = kkaMessageService;
+            _novaMessageService = novaMessageService;
             _logger = logger;
         }
 
@@ -35,8 +36,8 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         [BindProperty(SupportsGet = true, Name = "hasSendMessage")]
         public bool FilterHasSendMessage { get; set; }
 
-        public IReadOnlyList<ExportMessageRabbitKka> MessageGroups { get; private set; }
-            = Array.Empty<ExportMessageRabbitKka>();
+        public IReadOnlyList<ExportMessageRabbitNova> MessageGroups { get; private set; }
+            = Array.Empty<ExportMessageRabbitNova>();
 
         public IReadOnlyList<string> OperationKeys { get; private set; }
             = Array.Empty<string>();
@@ -44,7 +45,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         public IReadOnlyDictionary<int, string> StatusNames { get; private set; }
             = new Dictionary<int, string>();
 
-        public string PageName => "Kka";
+        public string PageName => "Nova";
 
         public int PageNumber { get; private set; } = 1;
 
@@ -80,27 +81,27 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         public bool? FilterHasSendMessageForRoute => FilterHasSendMessage ? true : (bool?)null;
 
-        public async System.Threading.Tasks.Task OnGetAsync(int pageNumber = 1)
+        public async Task OnGetAsync(int pageNumber = 1)
         {
             try
             {
                 pageNumber = Math.Max(1, pageNumber);
-                OperationKeys = await _kkaMessageService.GetOperationKeysAsync().ConfigureAwait(false);
+                OperationKeys = await _novaMessageService.GetOperationKeysAsync().ConfigureAwait(false);
 
                 if (!TryBuildFilter(OperationKeys, out var filter))
                 {
-                    StatusNames = await _kkaMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
+                    StatusNames = await _novaMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
                     return;
                 }
 
-                var result = await _kkaMessageService
+                var result = await _novaMessageService
                     .GetMessagesPageAsync(pageNumber, PageSize, filter)
                     .ConfigureAwait(false);
 
                 if (result.TotalPages > 0 && pageNumber > result.TotalPages)
                 {
                     pageNumber = result.TotalPages;
-                    result = await _kkaMessageService
+                    result = await _novaMessageService
                         .GetMessagesPageAsync(pageNumber, PageSize, filter)
                         .ConfigureAwait(false);
                 }
@@ -114,11 +115,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
                 RangeFrom = result.RangeFrom;
                 RangeTo = result.RangeTo;
 
-                StatusNames = await _kkaMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
+                StatusNames = await _novaMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to load KKA messages.");
+                _logger.LogError(ex, "Failed to load NOVA messages.");
                 ErrorMessage = ex.Message;
             }
         }
@@ -150,7 +151,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             }
         }
 
-        private bool TryBuildFilter(IReadOnlyList<string> operationKeys, out KkaMessageFilter filter)
+        private bool TryBuildFilter(IReadOnlyList<string> operationKeys, out NovaMessageFilter filter)
         {
             filter = null;
             var hasId = !string.IsNullOrWhiteSpace(FilterId);
@@ -162,7 +163,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             }
 
             HasActiveFilter = true;
-            filter = new KkaMessageFilter
+            filter = new NovaMessageFilter
             {
                 WithError = FilterHasError,
                 WithSendMessage = FilterHasSendMessage,
