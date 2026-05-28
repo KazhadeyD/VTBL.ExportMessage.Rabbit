@@ -18,5 +18,8 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
 
         Task<IReadOnlyList<string>> GetOperationKeysAsync(
             CancellationToken cancellationToken = default);
+
+        Task<KkaDashboardStats> GetDashboardStatsAsync(
+            CancellationToken cancellationToken = default);
     }
 }

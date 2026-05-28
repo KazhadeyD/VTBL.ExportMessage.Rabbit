@@ -1,10 +1,55 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Главная";
 }
 
-<div class="text-center">
-    <h1 class="display-4">VTBL ExportMessage Rabbit</h1>
-    <p class="lead">Мониторинг сообщений RabbitMQ</p>
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4 p-lg-5">
+        <h1 class="display-5 mb-3">Добро пожаловать в VTBL ExportMessage Rabbit</h1>
+        <p class="lead mb-4">
+            Вы находитесь в сервисе мониторинга и анализа сообщений RabbitMQ. Здесь можно быстро найти нужную Task,
+            проверить историю статусов, увидеть ошибки обработки и содержимое сообщений.
+        </p>
+
+        <h2 class="h5 mb-3">Что делать дальше</h2>
+        <ol class="mb-4">
+            <li>Перейдите в раздел <strong>ККА</strong>.</li>
+            <li>Задайте фильтры: <code>Id</code>, <code>OperationKey</code>, наличие <code>Error</code> или <code>SendMessage</code>.</li>
+            <li>Откройте найденную запись и проверьте Body, историю статусов и детали ошибок.</li>
+        </ol>
+
+        <h2 class="h5 mb-3">Сводка по сообщениям</h2>
+        <div class="row mb-4">
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="card h-100 border-info">
+                    <div class="card-body">
+                        <div class="text-muted small">Всего записей</div>
+                        <div class="h3 mb-0">@Model.DashboardStats.Total</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2 mb-md-0">
+                <div class="card h-100 border-success">
+                    <div class="card-body">
+                        <div class="text-muted small">Успешных (без Error)</div>
+                        <div class="h3 mb-0 text-success">@Model.DashboardStats.Successful</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-danger">
+                    <div class="card-body">
+                        <div class="text-muted small">Неуспешных (есть Error)</div>
+                        <div class="h3 mb-0 text-danger">@Model.DashboardStats.Failed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap">
+            <a asp-page="/Kka" class="btn btn-primary mr-2 mb-2">Перейти в ККА</a>
+            <a asp-page="/Debug" class="btn btn-outline-secondary mb-2">Открыть Debug</a>
+        </div>
+    </div>
 </div>

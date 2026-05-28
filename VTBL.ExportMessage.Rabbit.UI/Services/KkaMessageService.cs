@@ -99,5 +99,27 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }
+
+        public async Task<KkaDashboardStats> GetDashboardStatsAsync(
+            CancellationToken cancellationToken = default)
+        {
+            var baseQuery = _dbContext.ExportMessageRabbitKkas.AsNoTracking();
+
+            var total = await baseQuery
+                .CountAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var failed = await baseQuery
+                .CountAsync(k => k.StatusHistory.Any(s =>
+                    s.ErrorMessage != null && s.ErrorMessage != string.Empty), cancellationToken)
+                .ConfigureAwait(false);
+
+            return new KkaDashboardStats
+            {
+                Total = total,
+                Failed = failed,
+                Successful = total - failed,
+            };
+        }
     }
 }
