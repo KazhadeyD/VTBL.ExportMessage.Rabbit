@@ -128,6 +128,10 @@ body {
   --kka-border: #bdddf5;
   --kka-text: #1f3c56;
   --kka-radius: 0.55rem;
+  height: calc(100vh - 11.5rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .kka-page__title {
@@ -138,7 +142,9 @@ body {
 }
 
 .kka-page__layout {
-  min-height: 28rem;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .kka-panel {
@@ -165,6 +171,7 @@ body {
 .kka-panel__body {
   min-height: 20rem;
   padding: 1.1rem;
+  min-height: 0;
 }
 
 .kka-panel__placeholder {
@@ -172,9 +179,15 @@ body {
 }
 
 .kka-results {
-  max-height: calc(100vh - 12rem);
+  height: 100%;
+  max-height: none;
   overflow-y: auto;
   scroll-behavior: smooth;
+}
+
+.kka-page__results,
+.kka-page__results .kka-panel {
+  height: 100%;
 }
 
 .kka-message-group {
