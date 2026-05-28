@@ -61,6 +61,8 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  background: linear-gradient(180deg, #f6fbff 0%, #ffffff 35%);
+  color: #1f3c56;
 }
 .footer {
   position: absolute;
@@ -68,11 +70,71 @@ body {
   width: 100%;
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
+  background-color: #f3faff;
+  border-top-color: #cde5f8 !important;
+}
+
+.navbar.navbar-light {
+  background-color: #f3faff !important;
+  border-bottom-color: #cde5f8 !important;
+}
+
+.navbar.navbar-light .navbar-brand {
+  color: #2b6cb0 !important;
+  font-weight: 700;
+}
+
+.navbar.navbar-light .nav-link {
+  color: #356f9f !important;
+  border-radius: 0.35rem;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar.navbar-light .nav-link:hover,
+.navbar.navbar-light .nav-link:focus {
+  color: #245a92 !important;
+  background-color: #e8f5ff;
+}
+
+.navbar.navbar-light .nav-item.active .nav-link,
+.navbar.navbar-light .nav-link.active {
+  color: #1f4f80 !important;
+  background-color: #dff0ff;
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 #4c8dcf;
+}
+
+.navbar.navbar-light .navbar-text {
+  color: #4f7ea7 !important;
+}
+
+.footer,
+.footer a {
+  color: #4f7ea7;
+}
+
+.footer a:hover,
+.footer a:focus {
+  color: #2b6cb0;
 }
 
 /* KKA page */
+.kka-page {
+  --kka-blue: #2b6cb0;
+  --kka-blue-soft: #4c8dcf;
+  --kka-sky: #d9efff;
+  --kka-sky-light: #eef8ff;
+  --kka-white: #ffffff;
+  --kka-border: #bdddf5;
+  --kka-text: #1f3c56;
+  --kka-radius: 0.55rem;
+}
+
 .kka-page__title {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.4rem;
+  color: var(--kka-blue);
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .kka-page__layout {
@@ -80,20 +142,29 @@ body {
 }
 
 .kka-panel {
-  border-color: #dee2e6;
+  border-color: var(--kka-border);
+  background-color: var(--kka-white);
+  box-shadow: 0 8px 20px rgba(43, 108, 176, 0.08);
+  border-radius: var(--kka-radius);
+  overflow: hidden;
 }
 
 .kka-panel__header {
-  background-color: #f8f9fa;
+  background-color: var(--kka-sky-light);
+  border-bottom: 1px solid var(--kka-border);
   font-weight: 600;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
 }
 
 .kka-panel__title {
   font-size: 1.1rem;
+  color: var(--kka-blue);
 }
 
 .kka-panel__body {
   min-height: 20rem;
+  padding: 1.1rem;
 }
 
 .kka-panel__placeholder {
@@ -103,14 +174,22 @@ body {
 .kka-results {
   max-height: calc(100vh - 12rem);
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .kka-message-group {
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: #fff;
+  border: 1px solid var(--kka-border);
+  border-radius: calc(var(--kka-radius) - 0.1rem);
+  padding: 1.05rem;
+  margin-bottom: 1.1rem;
+  background-color: var(--kka-white);
+  box-shadow: 0 4px 12px rgba(76, 141, 207, 0.1);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.kka-message-group:hover {
+  border-color: #a7d1ee;
+  box-shadow: 0 8px 18px rgba(76, 141, 207, 0.14);
 }
 
 .kka-message-group:last-child {
@@ -118,7 +197,7 @@ body {
 }
 
 .kka-message-group__header {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #d7eaf9;
   padding-bottom: 0.75rem;
   margin-bottom: 0.75rem;
 }
@@ -133,18 +212,21 @@ body {
   overflow: auto;
   white-space: pre-wrap;
   word-break: break-word;
-  background-color: #f8f9fa;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
+  background-color: var(--kka-sky-light);
+  padding: 0.65rem;
+  border-radius: 0.4rem;
+  border: 1px solid #d7eaf9;
+  color: var(--kka-text);
 }
 
 .kka-status-expand-row td {
-  background-color: #fafafa;
+  background-color: #f7fcff;
 }
 
 .kka-filters-form label {
   font-weight: 600;
   font-size: 0.9rem;
+  color: var(--kka-text);
 }
 
 .kka-page__filters {
@@ -164,10 +246,106 @@ body {
   box-sizing: border-box;
 }
 
+.kka-page .form-control,
+.kka-page .custom-select {
+  border-color: var(--kka-border);
+  border-radius: 0.4rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kka-page .form-control:focus,
+.kka-page .custom-select:focus {
+  border-color: var(--kka-blue-soft);
+  box-shadow: 0 0 0 0.2rem rgba(76, 141, 207, 0.2);
+}
+
+.kka-page .btn-primary {
+  background-color: var(--kka-blue);
+  border-color: var(--kka-blue);
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kka-page .btn-primary:hover,
+.kka-page .btn-primary:focus {
+  background-color: #245a92;
+  border-color: #245a92;
+  box-shadow: 0 0 0 0.12rem rgba(43, 108, 176, 0.25);
+}
+
+.kka-page .btn-outline-secondary {
+  color: var(--kka-blue);
+  border-color: var(--kka-border);
+  background-color: var(--kka-white);
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.kka-page .btn-outline-secondary:hover,
+.kka-page .btn-outline-secondary:focus {
+  color: var(--kka-blue);
+  border-color: var(--kka-blue-soft);
+  background-color: var(--kka-sky-light);
+}
+
+.kka-page .badge-secondary {
+  background-color: var(--kka-blue-soft);
+  color: var(--kka-white);
+}
+
+.kka-page details > summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kka-page details > summary.text-primary {
+  color: var(--kka-blue) !important;
+}
+
+.kka-page .table thead.thead-light th {
+  background-color: var(--kka-sky-light);
+  border-color: var(--kka-border);
+  color: var(--kka-text);
+}
+
+.kka-page .table-bordered td,
+.kka-page .table-bordered th {
+  border-color: #dceefd;
+}
+
+.kka-page .table tbody tr:hover {
+  background-color: #f5fbff;
+}
+
 .kka-results__summary {
   margin-bottom: 1rem;
+  color: var(--kka-text);
+  font-weight: 500;
 }
 
 .kka-pagination .page-item.active .page-link {
   z-index: 1;
+}
+
+.kka-pagination .page-link {
+  color: var(--kka-blue);
+  border-color: #dceefd;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.kka-pagination .page-link:hover {
+  color: #245a92;
+  background-color: var(--kka-sky-light);
+  border-color: var(--kka-border);
+}
+
+.kka-pagination .page-item.active .page-link {
+  background-color: var(--kka-blue);
+  border-color: var(--kka-blue);
+  color: var(--kka-white);
+}
+
+.kka-pagination .page-item.disabled .page-link {
+  color: #88aac9;
+  background-color: var(--kka-white);
 }
