@@ -111,7 +111,7 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
    - Реализация наследуется от `IntegrationMessageServiceBase<TMessage, TStatus>`.
 6. Добавьте Razor Pages:
    - `Pages/<System>.cshtml`
-   - `Pages/<System>.cshtml.cs` (реализует `IIntegrationPagingModel`)
+   - `Pages/<System>.cshtml.cs` (наследник `IntegrationPageModelBase<TMessage, TFilter>`)
 7. Подключите DI в `Startup.cs` и пункт меню в `_Layout.cshtml`.
 8. Для пагинации используйте общий partial `Pages/Shared/_IntegrationPagination.cshtml`.
 
@@ -119,6 +119,7 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-06-11 | Рефакторинг страниц интеграций: `IntegrationPageModelBase<TMessage, TFilter>`, единый `IIntegrationPageModel` |
 | 2026-06-11 | `.gitignore`: каталог `_build_out/` (альтернативный вывод `dotnet build`) |
 | 2026-06-11 | Выбор размера страницы результатов: 20 / 50 / 100 (`pageSize` в query string) |
 | 2026-06-11 | Сортировка статусов в результатах по `RowVersion` (SQL rowversion), а не по `Created` |
