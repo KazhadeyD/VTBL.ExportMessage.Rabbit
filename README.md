@@ -119,6 +119,7 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-05-26 | Сортировка статусов в результатах по `RowVersion` (SQL rowversion), а не по `Created` |
 | 2026-05-26 | Кнопка «Обновить» в блоке результатов (ККА, NOVA, Remarketing): частичная перезагрузка через handler `Results` |
 | 2026-05-26 | Обработка отсутствующих таблиц БД: понятные сообщения на страницах интеграций и на главной (`IntegrationDatabaseErrorFormatter`) |
 | 2026-05-26 | Фильтр по диапазону `Created` (от/до) на страницах ККА, NOVA, Remarketing; общий `IntegrationFilterBuilder` и partial `_IntegrationCreatedFilter` |

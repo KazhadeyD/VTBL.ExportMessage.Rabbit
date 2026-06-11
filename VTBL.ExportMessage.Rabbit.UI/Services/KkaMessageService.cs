@@ -87,7 +87,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
         protected override void SortMessageStatuses(ExportMessageRabbitKka message)
         {
             message.StatusHistory = message.StatusHistory
-                .OrderBy(s => s.Created)
+                .OrderBy(s => s.RowVersion, RowVersionByteComparer.Instance)
                 .ToList();
         }
     }
