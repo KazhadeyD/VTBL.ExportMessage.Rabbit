@@ -8,6 +8,8 @@ namespace VTBL.ExportMessage.Rabbit.UI.Models
 
         int PageNumber { get; }
 
+        int PageSize { get; }
+
         int TotalPages { get; }
 
         bool HasPrevious { get; }

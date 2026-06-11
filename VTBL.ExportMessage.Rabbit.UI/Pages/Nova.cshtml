@@ -80,6 +80,7 @@
                                 <label class="form-check-label" for="filter-has-send-message">Есть SendMessage в статусах</label>
                             </div>
                         </div>
+                        <input type="hidden" name="pageSize" value="@Model.PageSize" />
                         <div class="d-flex flex-wrap">
                             <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2">Применить</button>
                             <a asp-page="Nova" class="btn btn-outline-secondary btn-sm mb-2">Сбросить</a>

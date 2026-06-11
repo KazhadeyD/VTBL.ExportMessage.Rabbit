@@ -1,4 +1,17 @@
 (function () {
+    document.addEventListener('change', function (event) {
+        var pageSizeSelect = event.target.closest('.integration-page-size');
+        if (!pageSizeSelect) {
+            return;
+        }
+
+        var url = new URL(window.location.href);
+        url.searchParams.set('pageSize', pageSizeSelect.value);
+        url.searchParams.set('pageNumber', '1');
+        url.searchParams.delete('handler');
+        window.location.href = url.toString();
+    });
+
     document.addEventListener('click', function (event) {
         var button = event.target.closest('.integration-results-refresh');
         if (!button) {

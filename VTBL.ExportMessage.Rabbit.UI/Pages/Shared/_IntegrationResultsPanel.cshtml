@@ -11,8 +11,9 @@
                 {
                     <span class="badge badge-secondary" title="Всего сообщений">@Model.TotalCount</span>
                 }
+                <partial name="_IntegrationPageSizeSelector" model="Model" />
                 <button type="button"
-                        class="btn btn-sm btn-outline-secondary integration-results-refresh @(Model.TotalCount > 0 ? "ml-2" : null)"
+                        class="btn btn-sm btn-outline-secondary integration-results-refresh ml-2"
                         title="Обновить результаты">
                     Обновить
                 </button>

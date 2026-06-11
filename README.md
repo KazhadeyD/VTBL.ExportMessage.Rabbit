@@ -119,11 +119,13 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
-| 2026-05-26 | Сортировка статусов в результатах по `RowVersion` (SQL rowversion), а не по `Created` |
-| 2026-05-26 | Кнопка «Обновить» в блоке результатов (ККА, NOVA, Remarketing): частичная перезагрузка через handler `Results` |
-| 2026-05-26 | Обработка отсутствующих таблиц БД: понятные сообщения на страницах интеграций и на главной (`IntegrationDatabaseErrorFormatter`) |
-| 2026-05-26 | Фильтр по диапазону `Created` (от/до) на страницах ККА, NOVA, Remarketing; общий `IntegrationFilterBuilder` и partial `_IntegrationCreatedFilter` |
-| 2026-05-26 | Добавлен раздел Remarketing (таблицы SQL, EF-сущности, сервисы, Razor Pages `/Remarketing`, навигация, сводка на главной) |
+| 2026-06-11 | `.gitignore`: каталог `_build_out/` (альтернативный вывод `dotnet build`) |
+| 2026-06-11 | Выбор размера страницы результатов: 20 / 50 / 100 (`pageSize` в query string) |
+| 2026-06-11 | Сортировка статусов в результатах по `RowVersion` (SQL rowversion), а не по `Created` |
+| 2026-06-11 | Кнопка «Обновить» в блоке результатов (ККА, NOVA, Remarketing): частичная перезагрузка через handler `Results` |
+| 2026-06-11 | Обработка отсутствующих таблиц БД: понятные сообщения на страницах интеграций и на главной (`IntegrationDatabaseErrorFormatter`) |
+| 2026-06-11 | Фильтр по диапазону `Created` (от/до) на страницах ККА, NOVA, Remarketing; общий `IntegrationFilterBuilder` и partial `_IntegrationCreatedFilter` |
+| 2026-06-11 | Добавлен раздел Remarketing (таблицы SQL, EF-сущности, сервисы, Razor Pages `/Remarketing`, навигация, сводка на главной) |
 | 2026-05-28 | Добавлен раздел NOVA (таблицы SQL, EF-сущности, сервисы, Razor Pages, навигация) |
 | 2026-05-28 | Вынесен общий каркас integration-систем: `IntegrationMessageServiceBase`, общие модели фильтра/пагинации/статистики, общий partial пагинации |
 | 2026-05-26 | Seed `RabbitIntegrationOperationKeysConfiguration` (7 операций KKA/1C) |
