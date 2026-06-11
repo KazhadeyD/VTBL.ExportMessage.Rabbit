@@ -119,6 +119,8 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-05-26 | Кнопка «Обновить» в блоке результатов (ККА, NOVA, Remarketing): частичная перезагрузка через handler `Results` |
+| 2026-05-26 | Обработка отсутствующих таблиц БД: понятные сообщения на страницах интеграций и на главной (`IntegrationDatabaseErrorFormatter`) |
 | 2026-05-26 | Фильтр по диапазону `Created` (от/до) на страницах ККА, NOVA, Remarketing; общий `IntegrationFilterBuilder` и partial `_IntegrationCreatedFilter` |
 | 2026-05-26 | Добавлен раздел Remarketing (таблицы SQL, EF-сущности, сервисы, Razor Pages `/Remarketing`, навигация, сводка на главной) |
 | 2026-05-28 | Добавлен раздел NOVA (таблицы SQL, EF-сущности, сервисы, Razor Pages, навигация) |

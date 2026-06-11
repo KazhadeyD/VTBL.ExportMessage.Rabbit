@@ -7,6 +7,7 @@
 
 <div class="kka-page">
     <h1 class="kka-page__title">Remarketing</h1>
+    <partial name="_IntegrationDataErrorAlert" model="Model" />
 
     <div class="row kka-page__layout">
         <aside class="col-lg-5 col-xl-4 kka-page__filters mb-3 mb-lg-0">
@@ -88,133 +89,11 @@
             </div>
         </aside>
 
-        <section class="col-lg-7 col-xl-8 kka-page__results">
-            <div class="card kka-panel h-100">
-                <div class="card-header kka-panel__header d-flex justify-content-between align-items-center">
-                    <h2 class="kka-panel__title mb-0">Результаты</h2>
-                    @if (string.IsNullOrEmpty(Model.ErrorMessage) && Model.TotalCount > 0)
-                    {
-                        <span class="badge badge-secondary" title="Всего сообщений">@Model.TotalCount</span>
-                    }
-                </div>
-                <div class="card-body kka-panel__body kka-results">
-                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                    {
-                        <div class="alert alert-danger mb-0" role="alert">@Model.ErrorMessage</div>
-                    }
-                    else if (Model.TotalCount == 0)
-                    {
-                        <p class="text-muted mb-0">
-                            @(Model.HasActiveFilter ? "По заданным фильтрам ничего не найдено." : "Сообщений нет.")
-                        </p>
-                    }
-                    else
-                    {
-                        @if (Model.TotalPages > 1)
-                        {
-                            <partial name="_IntegrationPagination" model="Model" />
-                        }
-                        <p class="text-muted small kka-results__summary">
-                            Показано @Model.RangeFrom–@Model.RangeTo из @Model.TotalCount
-                        </p>
-                        @foreach (var message in Model.MessageGroups)
-                        {
-                            <article class="kka-message-group" id="message-@message.Id">
-                                <header class="kka-message-group__header">
-                                    <h3 class="kka-message-group__id mb-1">
-                                        <span class="text-muted">Id:</span> @message.Id
-                                    </h3>
-                                    <dl class="row kka-message-group__meta mb-0 small">
-                                        <dt class="col-sm-3 col-md-2">OperationKey</dt>
-                                        <dd class="col-sm-9 col-md-4">@message.OperationKey</dd>
-                                        <dt class="col-sm-3 col-md-2">Endpoint</dt>
-                                        <dd class="col-sm-9 col-md-4">@message.Endpoint</dd>
-                                        <dt class="col-sm-3 col-md-2">Created</dt>
-                                        <dd class="col-sm-9 col-md-4">@message.Created.ToString("yyyy-MM-dd HH:mm:ss")</dd>
-                                        <dt class="col-sm-3 col-md-2">MessageId</dt>
-                                        <dd class="col-sm-9 col-md-4">@(message.MessageId?.ToString() ?? "—")</dd>
-                                        @if (message.OperationConfiguration != null)
-                                        {
-                                            <dt class="col-sm-3 col-md-2">Exchange</dt>
-                                            <dd class="col-sm-9 col-md-4">@message.OperationConfiguration.SendPackageRabbitExchange</dd>
-                                            <dt class="col-sm-3 col-md-2">Routing key</dt>
-                                            <dd class="col-sm-9 col-md-4">@message.OperationConfiguration.SendPackageRabbitRoutingkey</dd>
-                                        }
-                                    </dl>
-                                </header>
-
-                                @if (!string.IsNullOrEmpty(message.Body))
-                                {
-                                    <details class="kka-message-group__body-details mb-2">
-                                        <summary class="small text-primary">Body</summary>
-                                        <pre class="kka-message-group__body small mb-0 mt-2">@message.Body</pre>
-                                    </details>
-                                }
-
-                                <div class="kka-message-group__statuses">
-                                    <h4 class="h6 text-muted mb-2">Статусы (@message.StatusHistory.Count)</h4>
-                                    @if (message.StatusHistory.Count == 0)
-                                    {
-                                        <p class="text-muted small mb-0">Записей статуса нет.</p>
-                                    }
-                                    else
-                                    {
-                                        <table class="table table-sm table-bordered mb-0">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th>Created</th>
-                                                    <th>Status</th>
-                                                    <th>ProcessingId</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var status in message.StatusHistory)
-                                                {
-                                                    <tr>
-                                                        <td>@status.Created.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                                                        <td>@Model.ResolveStatusName(status.StatusId)</td>
-                                                        <td>@(status.ProcessingId?.ToString() ?? "—")</td>
-                                                    </tr>
-                                                    @if (!string.IsNullOrEmpty(status.SendMessage))
-                                                    {
-                                                        <tr class="kka-status-expand-row">
-                                                            <td colspan="3" class="pt-0">
-                                                                <details class="kka-message-group__body-details">
-                                                                    <summary class="small text-primary">SendMessage</summary>
-                                                                    <pre class="kka-message-group__body small mb-0 mt-2">@status.SendMessage</pre>
-                                                                </details>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                    @if (!string.IsNullOrEmpty(status.ErrorMessage))
-                                                    {
-                                                        <tr class="kka-status-expand-row">
-                                                            <td colspan="3" class="pt-0">
-                                                                <details class="kka-message-group__body-details">
-                                                                    <summary class="small text-danger">Error</summary>
-                                                                    <pre class="kka-message-group__body small mb-0 mt-2">@status.ErrorMessage</pre>
-                                                                </details>
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                }
-                                            </tbody>
-                                        </table>
-                                    }
-                                </div>
-                            </article>
-                        }
-                        @if (Model.TotalPages > 1)
-                        {
-                            <partial name="_IntegrationPagination" model="Model" />
-                        }
-                    }
-                </div>
-            </div>
-        </section>
+        <partial name="_IntegrationResultsPanel" model="Model" />
     </div>
 </div>
 
 @section Scripts {
     <script src="~/js/kka-filters.js" asp-append-version="true"></script>
+    <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
 }
