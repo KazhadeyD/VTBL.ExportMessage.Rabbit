@@ -47,6 +47,16 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 {
                     query = ApplyWithSendMessageFilter(query);
                 }
+
+                if (filter.HasCreatedFrom)
+                {
+                    query = ApplyCreatedFromFilter(query, filter.CreatedFrom.Value);
+                }
+
+                if (filter.HasCreatedTo)
+                {
+                    query = ApplyCreatedToFilter(query, filter.CreatedTo.Value);
+                }
             }
 
             var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
@@ -126,6 +136,10 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
         protected abstract IQueryable<TMessage> ApplyWithErrorFilter(IQueryable<TMessage> query);
 
         protected abstract IQueryable<TMessage> ApplyWithSendMessageFilter(IQueryable<TMessage> query);
+
+        protected abstract IQueryable<TMessage> ApplyCreatedFromFilter(IQueryable<TMessage> query, System.DateTime createdFrom);
+
+        protected abstract IQueryable<TMessage> ApplyCreatedToFilter(IQueryable<TMessage> query, System.DateTime createdTo);
 
         protected abstract void SortMessageStatuses(TMessage message);
     }

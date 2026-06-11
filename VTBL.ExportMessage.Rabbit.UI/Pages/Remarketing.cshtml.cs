@@ -11,16 +11,18 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
-    public class NovaModel : PageModel, IIntegrationPagingModel, IIntegrationCreatedFilterFields
+    public class RemarketingModel : PageModel, IIntegrationPagingModel, IIntegrationCreatedFilterFields
     {
         public const int DefaultPageSize = 20;
 
-        private readonly INovaMessageService _novaMessageService;
-        private readonly ILogger<NovaModel> _logger;
+        private readonly IRemarketingMessageService _remarketingMessageService;
+        private readonly ILogger<RemarketingModel> _logger;
 
-        public NovaModel(INovaMessageService novaMessageService, ILogger<NovaModel> logger)
+        public RemarketingModel(
+            IRemarketingMessageService remarketingMessageService,
+            ILogger<RemarketingModel> logger)
         {
-            _novaMessageService = novaMessageService;
+            _remarketingMessageService = remarketingMessageService;
             _logger = logger;
         }
 
@@ -42,8 +44,8 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         [BindProperty(SupportsGet = true, Name = "createdTo")]
         public string FilterCreatedTo { get; set; }
 
-        public IReadOnlyList<ExportMessageRabbitNova> MessageGroups { get; private set; }
-            = Array.Empty<ExportMessageRabbitNova>();
+        public IReadOnlyList<ExportMessageRabbitRemarketing> MessageGroups { get; private set; }
+            = Array.Empty<ExportMessageRabbitRemarketing>();
 
         public IReadOnlyList<string> OperationKeys { get; private set; }
             = Array.Empty<string>();
@@ -51,7 +53,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         public IReadOnlyDictionary<int, string> StatusNames { get; private set; }
             = new Dictionary<int, string>();
 
-        public string PageName => "Nova";
+        public string PageName => "Remarketing";
 
         public int PageNumber { get; private set; } = 1;
 
@@ -104,22 +106,22 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             try
             {
                 pageNumber = Math.Max(1, pageNumber);
-                OperationKeys = await _novaMessageService.GetOperationKeysAsync().ConfigureAwait(false);
+                OperationKeys = await _remarketingMessageService.GetOperationKeysAsync().ConfigureAwait(false);
 
                 if (!TryBuildFilter(OperationKeys, out var filter))
                 {
-                    StatusNames = await _novaMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
+                    StatusNames = await _remarketingMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
                     return;
                 }
 
-                var result = await _novaMessageService
+                var result = await _remarketingMessageService
                     .GetMessagesPageAsync(pageNumber, PageSize, filter)
                     .ConfigureAwait(false);
 
                 if (result.TotalPages > 0 && pageNumber > result.TotalPages)
                 {
                     pageNumber = result.TotalPages;
-                    result = await _novaMessageService
+                    result = await _remarketingMessageService
                         .GetMessagesPageAsync(pageNumber, PageSize, filter)
                         .ConfigureAwait(false);
                 }
@@ -133,11 +135,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
                 RangeFrom = result.RangeFrom;
                 RangeTo = result.RangeTo;
 
-                StatusNames = await _novaMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
+                StatusNames = await _remarketingMessageService.GetStatusNameMapAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to load NOVA messages.");
+                _logger.LogError(ex, "Failed to load Remarketing messages.");
                 ErrorMessage = ex.Message;
             }
         }
@@ -169,7 +171,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             }
         }
 
-        private bool TryBuildFilter(IReadOnlyList<string> operationKeys, out NovaMessageFilter filter)
+        private bool TryBuildFilter(IReadOnlyList<string> operationKeys, out RemarketingMessageFilter filter)
         {
             var binding = new IntegrationFilterBinding
             {

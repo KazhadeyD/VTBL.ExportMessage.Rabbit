@@ -28,5 +28,11 @@ namespace VTBL.ExportMessage.Rabbit.Context.Entities
         /// </summary>
         public ICollection<ExportMessageRabbitNova> NovaExportMessages { get; set; }
             = new List<ExportMessageRabbitNova>();
+
+        /// <summary>
+        /// Сообщения Remarketing с этим ключом операции (FK в БД нет).
+        /// </summary>
+        public ICollection<ExportMessageRabbitRemarketing> RemarketingExportMessages { get; set; }
+            = new List<ExportMessageRabbitRemarketing>();
     }
 }

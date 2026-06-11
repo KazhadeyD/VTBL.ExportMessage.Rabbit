@@ -24,7 +24,7 @@ docker compose up -d
 | Скрипт | Назначение |
 |--------|------------|
 | `docker/mssql/init/01-create-database.sql` | Создание БД `MSCRM_EXT` |
-| `docker/mssql/init/02-create-tables.sql` | Таблицы `ExportMessageRabbitKKA`, `ExportMessageRabbitKKAStatus`, `ExportMessageRabbitNOVA`, `ExportMessageRabbitNOVAStatus`, `ExportMessageRabbitStatusName` |
+| `docker/mssql/init/02-create-tables.sql` | Таблицы `ExportMessageRabbitKKA`, `ExportMessageRabbitKKAStatus`, `ExportMessageRabbitNOVA`, `ExportMessageRabbitNOVAStatus`, `ExportMessageRabbitREMARKETING`, `ExportMessageRabbitREMARKETINGStatus`, `ExportMessageRabbitStatusName` |
 | `docker/mssql/init/03-seed-status-names.sql` | Справочник статусов: Ready, InProcessed, Send, Close, Error |
 | `docker/mssql/init/04-seed-rabbit-integration-operation-keys.sql` | Конфигурация интеграций Rabbit (7 записей) |
 
@@ -96,7 +96,7 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 ## Добавление новой системы (по шаблону KKA/NOVA)
 
-Архитектура подготовлена для расширения на следующие интеграции с тем же устройством (например, третья система после NOVA).
+Архитектура подготовлена для расширения на следующие интеграции с тем же устройством (KKA, NOVA, Remarketing — по одному шаблону).
 
 1. Добавьте сущности в `VTBL.ExportMessage.Rabbit.Context/Entities`:
    - `ExportMessageRabbit<System>.cs`
@@ -119,6 +119,8 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-05-26 | Фильтр по диапазону `Created` (от/до) на страницах ККА, NOVA, Remarketing; общий `IntegrationFilterBuilder` и partial `_IntegrationCreatedFilter` |
+| 2026-05-26 | Добавлен раздел Remarketing (таблицы SQL, EF-сущности, сервисы, Razor Pages `/Remarketing`, навигация, сводка на главной) |
 | 2026-05-28 | Добавлен раздел NOVA (таблицы SQL, EF-сущности, сервисы, Razor Pages, навигация) |
 | 2026-05-28 | Вынесен общий каркас integration-систем: `IntegrationMessageServiceBase`, общие модели фильтра/пагинации/статистики, общий partial пагинации |
 | 2026-05-26 | Seed `RabbitIntegrationOperationKeysConfiguration` (7 операций KKA/1C) |

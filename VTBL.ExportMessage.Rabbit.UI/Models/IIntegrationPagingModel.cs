@@ -22,6 +22,10 @@ namespace VTBL.ExportMessage.Rabbit.UI.Models
 
         bool? FilterHasSendMessageForRoute { get; }
 
+        string FilterCreatedFromForRoute { get; }
+
+        string FilterCreatedToForRoute { get; }
+
         IEnumerable<int> GetVisiblePageNumbers();
     }
 }

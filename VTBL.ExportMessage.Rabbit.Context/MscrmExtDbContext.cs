@@ -18,6 +18,10 @@ namespace VTBL.ExportMessage.Rabbit.Context
 
         public DbSet<ExportMessageRabbitNovaStatus> ExportMessageRabbitNovaStatuses { get; set; } = null!;
 
+        public DbSet<ExportMessageRabbitRemarketing> ExportMessageRabbitRemarketings { get; set; } = null!;
+
+        public DbSet<ExportMessageRabbitRemarketingStatus> ExportMessageRabbitRemarketingStatuses { get; set; } = null!;
+
         public DbSet<ExportMessageRabbitStatusName> ExportMessageRabbitStatusNames { get; set; } = null!;
 
         public DbSet<RabbitIntegrationOperationKeysConfiguration> RabbitIntegrationOperationKeysConfigurations { get; set; } = null!;
@@ -109,6 +113,52 @@ namespace VTBL.ExportMessage.Rabbit.Context
                 entity.Property(e => e.RowVersion).IsRowVersion();
 
                 // Логическая связь IntegrationId -> ExportMessageRabbitNOVA.Id без FK в БД.
+                entity.HasOne(e => e.Integration)
+                    .WithMany(k => k.StatusHistory)
+                    .HasForeignKey(e => e.IntegrationId)
+                    .HasPrincipalKey(k => k.Id)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<ExportMessageRabbitRemarketing>(entity =>
+            {
+                entity.ToTable("ExportMessageRabbitREMARKETING");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.OperationKey).HasMaxLength(100).IsRequired();
+
+                entity.Property(e => e.Endpoint).HasMaxLength(100).IsRequired();
+
+                entity.Property(e => e.Body).HasColumnType("nvarchar(max)");
+
+                // Логическая связь OperationKey -> RabbitIntegrationOperationKeysConfiguration.Key без FK в БД.
+                entity.HasOne(e => e.OperationConfiguration)
+                    .WithMany(c => c.RemarketingExportMessages)
+                    .HasForeignKey(e => e.OperationKey)
+                    .HasPrincipalKey(c => c.Key)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<ExportMessageRabbitRemarketingStatus>(entity =>
+            {
+                entity.ToTable("ExportMessageRabbitREMARKETINGStatus");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).HasDefaultValueSql("newid()").ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Created).HasColumnType("datetime").HasDefaultValueSql("getdate()");
+
+                entity.Property(e => e.ErrorMessage).HasColumnType("nvarchar(max)");
+
+                entity.Property(e => e.SendMessage).HasColumnType("nvarchar(max)");
+
+                entity.Property(e => e.RowVersion).IsRowVersion();
+
+                // Логическая связь IntegrationId -> ExportMessageRabbitREMARKETING.Id без FK в БД.
                 entity.HasOne(e => e.Integration)
                     .WithMany(k => k.StatusHistory)
                     .HasForeignKey(e => e.IntegrationId)

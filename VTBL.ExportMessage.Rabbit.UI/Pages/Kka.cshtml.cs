@@ -10,7 +10,7 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
-    public class KkaModel : PageModel, IIntegrationPagingModel
+    public class KkaModel : PageModel, IIntegrationPagingModel, IIntegrationCreatedFilterFields
     {
         public const int DefaultPageSize = 20;
 
@@ -34,6 +34,12 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         [BindProperty(SupportsGet = true, Name = "hasSendMessage")]
         public bool FilterHasSendMessage { get; set; }
+
+        [BindProperty(SupportsGet = true, Name = "createdFrom")]
+        public string FilterCreatedFrom { get; set; }
+
+        [BindProperty(SupportsGet = true, Name = "createdTo")]
+        public string FilterCreatedTo { get; set; }
 
         public IReadOnlyList<ExportMessageRabbitKka> MessageGroups { get; private set; }
             = Array.Empty<ExportMessageRabbitKka>();
@@ -66,6 +72,12 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         public string FilterOperationKeyError { get; private set; }
 
+        public string FilterCreatedFromError { get; private set; }
+
+        public string FilterCreatedToError { get; private set; }
+
+        public string FilterCreatedRangeError { get; private set; }
+
         public bool HasActiveFilter { get; private set; }
 
         public string ErrorMessage { get; private set; }
@@ -79,6 +91,12 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         public bool? FilterHasErrorForRoute => FilterHasError ? true : (bool?)null;
 
         public bool? FilterHasSendMessageForRoute => FilterHasSendMessage ? true : (bool?)null;
+
+        public string FilterCreatedFromForRoute =>
+            string.IsNullOrWhiteSpace(FilterCreatedFrom) ? null : FilterCreatedFrom.Trim();
+
+        public string FilterCreatedToForRoute =>
+            string.IsNullOrWhiteSpace(FilterCreatedTo) ? null : FilterCreatedTo.Trim();
 
         public async System.Threading.Tasks.Task OnGetAsync(int pageNumber = 1)
         {
@@ -152,49 +170,27 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         private bool TryBuildFilter(IReadOnlyList<string> operationKeys, out KkaMessageFilter filter)
         {
-            filter = null;
-            var hasId = !string.IsNullOrWhiteSpace(FilterId);
-            var hasOperationKey = !string.IsNullOrWhiteSpace(FilterOperationKey);
-
-            if (!hasId && !hasOperationKey && !FilterHasError && !FilterHasSendMessage)
+            var binding = new IntegrationFilterBinding
             {
-                return true;
-            }
-
-            HasActiveFilter = true;
-            filter = new KkaMessageFilter
-            {
-                WithError = FilterHasError,
-                WithSendMessage = FilterHasSendMessage,
+                Id = FilterId,
+                OperationKey = FilterOperationKey,
+                HasError = FilterHasError,
+                HasSendMessage = FilterHasSendMessage,
+                CreatedFrom = FilterCreatedFrom,
+                CreatedTo = FilterCreatedTo,
             };
 
-            if (hasId)
+            if (!IntegrationFilterBuilder.TryBuild(binding, operationKeys, out filter, out var errors, out var hasActiveFilter))
             {
-                if (Guid.TryParse(FilterId.Trim(), out var parsedId))
-                {
-                    filter.Id = parsedId;
-                }
-                else
-                {
-                    FilterIdError = "Некорректный формат Id. Укажите GUID, например: CA42A29F-4D8B-4428-9D43-20F9597C615F";
-                    return false;
-                }
+                FilterIdError = errors.Id;
+                FilterOperationKeyError = errors.OperationKey;
+                FilterCreatedFromError = errors.CreatedFrom;
+                FilterCreatedToError = errors.CreatedTo;
+                FilterCreatedRangeError = errors.CreatedRange;
+                return false;
             }
 
-            if (hasOperationKey)
-            {
-                var key = FilterOperationKey.Trim();
-                if (operationKeys.Contains(key, StringComparer.Ordinal))
-                {
-                    filter.OperationKey = key;
-                }
-                else
-                {
-                    FilterOperationKeyError = "Выберите OperationKey из списка.";
-                    return false;
-                }
-            }
-
+            HasActiveFilter = hasActiveFilter;
             return true;
         }
     }

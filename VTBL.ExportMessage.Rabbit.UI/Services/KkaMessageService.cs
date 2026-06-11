@@ -70,6 +70,20 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 s.SendMessage != null && s.SendMessage != string.Empty));
         }
 
+        protected override IQueryable<ExportMessageRabbitKka> ApplyCreatedFromFilter(
+            IQueryable<ExportMessageRabbitKka> query,
+            DateTime createdFrom)
+        {
+            return query.Where(k => k.Created >= createdFrom);
+        }
+
+        protected override IQueryable<ExportMessageRabbitKka> ApplyCreatedToFilter(
+            IQueryable<ExportMessageRabbitKka> query,
+            DateTime createdTo)
+        {
+            return query.Where(k => k.Created <= createdTo);
+        }
+
         protected override void SortMessageStatuses(ExportMessageRabbitKka message)
         {
             message.StatusHistory = message.StatusHistory

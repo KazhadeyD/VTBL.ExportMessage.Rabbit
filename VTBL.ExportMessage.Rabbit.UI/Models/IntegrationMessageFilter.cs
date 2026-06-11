@@ -15,5 +15,13 @@ namespace VTBL.ExportMessage.Rabbit.UI.Models
         public bool WithError { get; set; }
 
         public bool WithSendMessage { get; set; }
+
+        public DateTime? CreatedFrom { get; set; }
+
+        public DateTime? CreatedTo { get; set; }
+
+        public bool HasCreatedFrom => CreatedFrom.HasValue;
+
+        public bool HasCreatedTo => CreatedTo.HasValue;
     }
 }

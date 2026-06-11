@@ -100,6 +100,53 @@ ELSE
     PRINT N'Table dbo.ExportMessageRabbitNOVAStatus already exists.';
 GO
 
+IF OBJECT_ID(N'dbo.ExportMessageRabbitREMARKETING', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[ExportMessageRabbitREMARKETING](
+        [Id] [uniqueidentifier] NOT NULL,
+        [MessageId] [uniqueidentifier] NULL,
+        [OperationKey] [nvarchar](100) NOT NULL,
+        [Endpoint] [nvarchar](100) NOT NULL,
+        [Created] [datetime] NOT NULL,
+        [Body] [nvarchar](max) NULL,
+     CONSTRAINT [PK_ExportMessageRabbitREMARKETING] PRIMARY KEY CLUSTERED
+    (
+        [Id] ASC
+    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+
+    PRINT N'Table dbo.ExportMessageRabbitREMARKETING created.';
+END
+ELSE
+    PRINT N'Table dbo.ExportMessageRabbitREMARKETING already exists.';
+GO
+
+IF OBJECT_ID(N'dbo.ExportMessageRabbitREMARKETINGStatus', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[ExportMessageRabbitREMARKETINGStatus](
+        [Id] [uniqueidentifier] NOT NULL,
+        [IntegrationId] [uniqueidentifier] NOT NULL,
+        [StatusId] [int] NULL,
+        [Created] [datetime] NOT NULL,
+        [ProcessingId] [uniqueidentifier] NULL,
+        [ErrorMessage] [nvarchar](max) NULL,
+        [SendMessage] [nvarchar](max) NULL,
+        [RowVersion] [timestamp] NOT NULL,
+     CONSTRAINT [PK_ExportMessageRabbitREMARKETINGStatus] PRIMARY KEY CLUSTERED
+    (
+        [Id] ASC
+    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];
+
+    ALTER TABLE [dbo].[ExportMessageRabbitREMARKETINGStatus] ADD DEFAULT (newid()) FOR [Id];
+    ALTER TABLE [dbo].[ExportMessageRabbitREMARKETINGStatus] ADD DEFAULT (getdate()) FOR [Created];
+
+    PRINT N'Table dbo.ExportMessageRabbitREMARKETINGStatus created.';
+END
+ELSE
+    PRINT N'Table dbo.ExportMessageRabbitREMARKETINGStatus already exists.';
+GO
+
 IF OBJECT_ID(N'dbo.ExportMessageRabbitStatusName', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[ExportMessageRabbitStatusName](
