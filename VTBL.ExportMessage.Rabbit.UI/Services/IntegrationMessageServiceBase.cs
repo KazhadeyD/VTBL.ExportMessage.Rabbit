@@ -1,21 +1,29 @@
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VTBL.ExportMessage.Rabbit.Context;
+using VTBL.ExportMessage.Rabbit.Context.Entities;
 using VTBL.ExportMessage.Rabbit.UI.Models;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Services
 {
-    public abstract class IntegrationMessageServiceBase<TMessage, TStatus> : IIntegrationMessageService<TMessage>
-        where TMessage : class
+    public class IntegrationMessageServiceBase<TMessage, TStatus> : IIntegrationMessageService<TMessage>
+        where TMessage : class, IExportMessageRabbitMessage<TStatus>
+        where TStatus : class, IExportMessageRabbitStatus
     {
+        private readonly Func<MscrmExtDbContext, IQueryable<TMessage>> _baseQueryFactory;
+
         protected readonly MscrmExtDbContext DbContext;
 
-        protected IntegrationMessageServiceBase(MscrmExtDbContext dbContext)
+        protected IntegrationMessageServiceBase(
+            MscrmExtDbContext dbContext,
+            Func<MscrmExtDbContext, IQueryable<TMessage>> baseQueryFactory)
         {
             DbContext = dbContext;
+            _baseQueryFactory = baseQueryFactory;
         }
 
         public async Task<IntegrationMessagesPageResult<TMessage>> GetMessagesPageAsync(
@@ -30,47 +38,45 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             {
                 if (filter.HasId)
                 {
-                    query = ApplyIdFilter(query, filter.Id.Value);
+                    query = query.Where(m => m.Id == filter.Id.Value);
                 }
 
                 if (filter.HasOperationKey)
                 {
-                    query = ApplyOperationKeyFilter(query, filter.OperationKey);
+                    query = query.Where(m => m.OperationKey == filter.OperationKey);
                 }
 
                 if (filter.WithError)
                 {
-                    query = ApplyWithErrorFilter(query);
+                    query = query.Where(m => m.StatusHistory.Any(s =>
+                        s.ErrorMessage != null && s.ErrorMessage != string.Empty));
                 }
 
                 if (filter.WithSendMessage)
                 {
-                    query = ApplyWithSendMessageFilter(query);
+                    query = query.Where(m => m.StatusHistory.Any(s =>
+                        s.SendMessage != null && s.SendMessage != string.Empty));
                 }
 
                 if (filter.HasCreatedFrom)
                 {
-                    query = ApplyCreatedFromFilter(query, filter.CreatedFrom.Value);
+                    query = query.Where(m => m.Created >= filter.CreatedFrom.Value);
                 }
 
                 if (filter.HasCreatedTo)
                 {
-                    query = ApplyCreatedToFilter(query, filter.CreatedTo.Value);
+                    query = query.Where(m => m.Created <= filter.CreatedTo.Value);
                 }
             }
 
             var totalCount = await query.CountAsync(cancellationToken).ConfigureAwait(false);
 
-            var messages = await ApplyMessageOrdering(query)
+            var messages = await query
+                .OrderByDescending(m => m.Created)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
-
-            foreach (var message in messages)
-            {
-                SortMessageStatuses(message);
-            }
 
             return new IntegrationMessagesPageResult<TMessage>
             {
@@ -113,7 +119,9 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 .CountAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var failed = await ApplyWithErrorFilter(baseQuery)
+            var failed = await baseQuery
+                .Where(m => m.StatusHistory.Any(s =>
+                    s.ErrorMessage != null && s.ErrorMessage != string.Empty))
                 .CountAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -125,22 +133,6 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             };
         }
 
-        protected abstract IQueryable<TMessage> BuildBaseQuery();
-
-        protected abstract IQueryable<TMessage> ApplyMessageOrdering(IQueryable<TMessage> query);
-
-        protected abstract IQueryable<TMessage> ApplyIdFilter(IQueryable<TMessage> query, System.Guid id);
-
-        protected abstract IQueryable<TMessage> ApplyOperationKeyFilter(IQueryable<TMessage> query, string operationKey);
-
-        protected abstract IQueryable<TMessage> ApplyWithErrorFilter(IQueryable<TMessage> query);
-
-        protected abstract IQueryable<TMessage> ApplyWithSendMessageFilter(IQueryable<TMessage> query);
-
-        protected abstract IQueryable<TMessage> ApplyCreatedFromFilter(IQueryable<TMessage> query, System.DateTime createdFrom);
-
-        protected abstract IQueryable<TMessage> ApplyCreatedToFilter(IQueryable<TMessage> query, System.DateTime createdTo);
-
-        protected abstract void SortMessageStatuses(TMessage message);
+        protected IQueryable<TMessage> BuildBaseQuery() => _baseQueryFactory(DbContext);
     }
 }

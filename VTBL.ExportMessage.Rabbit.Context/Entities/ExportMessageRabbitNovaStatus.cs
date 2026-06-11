@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VTBL.ExportMessage.Rabbit.Context.Entities
 {
-    public class ExportMessageRabbitNovaStatus
+    public class ExportMessageRabbitNovaStatus : IExportMessageRabbitStatus
     {
         public Guid Id { get; set; }
 

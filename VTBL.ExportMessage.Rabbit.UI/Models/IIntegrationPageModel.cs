@@ -5,6 +5,12 @@ namespace VTBL.ExportMessage.Rabbit.UI.Models
 {
     public interface IIntegrationPageModel : IIntegrationPagingModel
     {
+        string PageTitle { get; }
+
+        bool FilterHasError { get; }
+
+        bool FilterHasSendMessage { get; }
+
         string FilterId { get; }
 
         string FilterOperationKey { get; }

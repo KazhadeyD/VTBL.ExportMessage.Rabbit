@@ -106,19 +106,21 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 4. Создайте UI-модели фильтра/результата:
    - `VTBL.ExportMessage.Rabbit.UI/Models/<System>MessageFilter.cs`
    - `VTBL.ExportMessage.Rabbit.UI/Models/<System>MessagesPageResult.cs`
-5. Создайте сервис:
+5. Реализуйте `IExportMessageRabbitMessage<TStatus>` и `IExportMessageRabbitStatus` на сущностях.
+6. Создайте сервис:
    - `I<System>MessageService` + `<System>MessageService`
-   - Реализация наследуется от `IntegrationMessageServiceBase<TMessage, TStatus>`.
-6. Добавьте Razor Pages:
-   - `Pages/<System>.cshtml`
+   - Наследник `IntegrationMessageServiceBase<TMessage, TStatus>` с `Include` статусов: `.Include(m => m.StatusHistory.OrderBy(s => s.RowVersion))`.
+7. Добавьте Razor Pages:
+   - `Pages/<System>.cshtml` — подключение `_IntegrationPageLayout`
    - `Pages/<System>.cshtml.cs` (наследник `IntegrationPageModelBase<TMessage, TFilter>`)
-7. Подключите DI в `Startup.cs` и пункт меню в `_Layout.cshtml`.
-8. Для пагинации используйте общий partial `Pages/Shared/_IntegrationPagination.cshtml`.
+8. Подключите DI в `Startup.cs` и пункт меню в `_Layout.cshtml`.
+9. Для пагинации используйте общий partial `Pages/Shared/_IntegrationPagination.cshtml`.
 
 ## История изменений
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-06-11 | Общие partial'ы `_IntegrationPageLayout` и `_IntegrationFiltersForm`; единый `IntegrationMessageServiceBase` с `Include(OrderBy RowVersion)`; интерфейсы `IExportMessageRabbitMessage` / `IExportMessageRabbitStatus` |
 | 2026-06-11 | Рефакторинг страниц интеграций: `IntegrationPageModelBase<TMessage, TFilter>`, единый `IIntegrationPageModel` |
 | 2026-06-11 | `.gitignore`: каталог `_build_out/` (альтернативный вывод `dotnet build`) |
 | 2026-06-11 | Выбор размера страницы результатов: 20 / 50 / 100 (`pageSize` в query string) |

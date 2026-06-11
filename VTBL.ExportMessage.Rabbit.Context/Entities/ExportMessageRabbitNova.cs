@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VTBL.ExportMessage.Rabbit.Context.Entities
 {
-    public class ExportMessageRabbitNova
+    public class ExportMessageRabbitNova : IExportMessageRabbitMessage<ExportMessageRabbitNovaStatus>
     {
         public Guid Id { get; set; }
 

@@ -1,100 +1,13 @@
-@page
-@model KkaModel
-@{
-    ViewData["Title"] = "ККА";
-    ViewData["MainContainerClass"] = "container-fluid";
-}
-
-<div class="kka-page">
-    <h1 class="kka-page__title">ККА</h1>
-    <partial name="_IntegrationDataErrorAlert" model="Model" />
-
-    <div class="row kka-page__layout">
-        <aside class="col-lg-5 col-xl-4 kka-page__filters mb-3 mb-lg-0">
-            <div class="card kka-panel h-100">
-                <div class="card-header kka-panel__header">
-                    <h2 class="kka-panel__title mb-0">Фильтры</h2>
-                </div>
-                <div class="card-body kka-panel__body">
-                    <form method="get" asp-page="Kka" class="kka-filters-form">
-                        <div class="form-group">
-                            <label for="filter-id">Id</label>
-                            <input type="text"
-                                   class="form-control kka-filter-id-input"
-                                   id="filter-id"
-                                   name="id"
-                                   value="@Model.FilterId"
-                                   placeholder="________-____-____-____-____________"
-                                   maxlength="36"
-                                   inputmode="text"
-                                   autocomplete="off"
-                                   spellcheck="false"
-                                   aria-describedby="filter-id-hint" />
-                            <small id="filter-id-hint" class="form-text text-muted">Формат: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</small>
-                            @if (!string.IsNullOrEmpty(Model.FilterIdError))
-                            {
-                                <small class="form-text text-danger">@Model.FilterIdError</small>
-                            }
-                        </div>
-                        <div class="form-group">
-                            <label for="filter-operation-key">OperationKey</label>
-                            <select class="form-control"
-                                    id="filter-operation-key"
-                                    name="operationKey">
-                                <option value="">— все —</option>
-                                @foreach (var operationKey in Model.OperationKeys)
-                                {
-                                    if (operationKey == Model.FilterOperationKey)
-                                    {
-                                        <option value="@operationKey" selected="selected">@operationKey</option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@operationKey">@operationKey</option>
-                                    }
-                                }
-                            </select>
-                            @if (!string.IsNullOrEmpty(Model.FilterOperationKeyError))
-                            {
-                                <small class="form-text text-danger">@Model.FilterOperationKeyError</small>
-                            }
-                        </div>
-                        <partial name="_IntegrationCreatedFilter" model="Model" />
-                        <div class="form-group mb-2">
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       id="filter-has-error"
-                                       name="hasError"
-                                       value="true"
-                                       @(Model.FilterHasError ? "checked=\"checked\"" : null) />
-                                <label class="form-check-label" for="filter-has-error">Есть Error в статусах</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       id="filter-has-send-message"
-                                       name="hasSendMessage"
-                                       value="true"
-                                       @(Model.FilterHasSendMessage ? "checked=\"checked\"" : null) />
-                                <label class="form-check-label" for="filter-has-send-message">Есть SendMessage в статусах</label>
-                            </div>
-                        </div>
-                        <input type="hidden" name="pageSize" value="@Model.PageSize" />
-                        <div class="d-flex flex-wrap">
-                            <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2">Применить</button>
-                            <a asp-page="Kka" class="btn btn-outline-secondary btn-sm mb-2">Сбросить</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </aside>
-
-        <partial name="_IntegrationResultsPanel" model="Model" />
-    </div>
-</div>
-
-@section Scripts {
-    <script src="~/js/kka-filters.js" asp-append-version="true"></script>
-    <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
-}
+@page
+@model KkaModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+    ViewData["MainContainerClass"] = "container-fluid";
+}
+
+<partial name="_IntegrationPageLayout" model="Model" />
+
+@section Scripts {
+    <script src="~/js/kka-filters.js" asp-append-version="true"></script>
+    <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
+}

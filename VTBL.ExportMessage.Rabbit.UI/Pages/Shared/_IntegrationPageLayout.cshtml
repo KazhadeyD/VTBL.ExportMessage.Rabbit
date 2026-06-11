@@ -1,0 +1,21 @@
+@model VTBL.ExportMessage.Rabbit.UI.Models.IIntegrationPageModel
+
+<div class="kka-page">
+    <h1 class="kka-page__title">@Model.PageTitle</h1>
+    <partial name="_IntegrationDataErrorAlert" model="Model" />
+
+    <div class="row kka-page__layout">
+        <aside class="col-lg-5 col-xl-4 kka-page__filters mb-3 mb-lg-0">
+            <div class="card kka-panel h-100">
+                <div class="card-header kka-panel__header">
+                    <h2 class="kka-panel__title mb-0">Фильтры</h2>
+                </div>
+                <div class="card-body kka-panel__body">
+                    <partial name="_IntegrationFiltersForm" model="Model" />
+                </div>
+            </div>
+        </aside>
+
+        <partial name="_IntegrationResultsPanel" model="Model" />
+    </div>
+</div>

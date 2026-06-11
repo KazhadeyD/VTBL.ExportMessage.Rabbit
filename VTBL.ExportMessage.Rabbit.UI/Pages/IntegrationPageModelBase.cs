@@ -28,6 +28,8 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         public abstract string PageName { get; }
 
+        public string PageTitle => SystemInfo.DisplayName;
+
         [BindProperty(SupportsGet = true, Name = "id")]
         public string FilterId { get; set; }
 
