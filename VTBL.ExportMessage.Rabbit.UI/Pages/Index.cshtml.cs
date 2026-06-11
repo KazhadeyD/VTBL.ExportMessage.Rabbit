@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VTBL.ExportMessage.Rabbit.UI.Models;
 using VTBL.ExportMessage.Rabbit.UI.Services;
@@ -26,53 +27,52 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             _logger = logger;
         }
 
-        public IntegrationDashboardStats KkaStats { get; private set; } = new IntegrationDashboardStats();
-
-        public IntegrationDashboardStats NovaStats { get; private set; } = new IntegrationDashboardStats();
-
-        public IntegrationDashboardStats RemarketingStats { get; private set; } = new IntegrationDashboardStats();
-
-        public string KkaStatsError { get; private set; }
-
-        public string NovaStatsError { get; private set; }
-
-        public string RemarketingStatsError { get; private set; }
+        public IReadOnlyList<IntegrationDashboardEntry> Systems { get; private set; }
+            = Array.Empty<IntegrationDashboardEntry>();
 
         public async Task OnGetAsync()
         {
-            await LoadStatsAsync(
+            var kkaTask = LoadEntryAsync(
                 IntegrationSystemInfo.Kka,
-                () => _kkaMessageService.GetDashboardStatsAsync(),
-                stats => KkaStats = stats,
-                error => KkaStatsError = error).ConfigureAwait(false);
+                "Kka",
+                () => _kkaMessageService.GetDashboardStatsAsync());
 
-            await LoadStatsAsync(
+            var novaTask = LoadEntryAsync(
                 IntegrationSystemInfo.Nova,
-                () => _novaMessageService.GetDashboardStatsAsync(),
-                stats => NovaStats = stats,
-                error => NovaStatsError = error).ConfigureAwait(false);
+                "Nova",
+                () => _novaMessageService.GetDashboardStatsAsync());
 
-            await LoadStatsAsync(
+            var remarketingTask = LoadEntryAsync(
                 IntegrationSystemInfo.Remarketing,
-                () => _remarketingMessageService.GetDashboardStatsAsync(),
-                stats => RemarketingStats = stats,
-                error => RemarketingStatsError = error).ConfigureAwait(false);
+                "Remarketing",
+                () => _remarketingMessageService.GetDashboardStatsAsync());
+
+            Systems = await Task.WhenAll(kkaTask, novaTask, remarketingTask).ConfigureAwait(false);
         }
 
-        private async Task LoadStatsAsync(
+        private async Task<IntegrationDashboardEntry> LoadEntryAsync(
             IntegrationSystemDescriptor system,
-            Func<Task<IntegrationDashboardStats>> loadStats,
-            Action<IntegrationDashboardStats> setStats,
-            Action<string> setError)
+            string pageRoute,
+            Func<Task<IntegrationDashboardStats>> loadStats)
         {
             try
             {
-                setStats(await loadStats().ConfigureAwait(false));
+                return new IntegrationDashboardEntry
+                {
+                    System = system,
+                    PageRoute = pageRoute,
+                    Stats = await loadStats().ConfigureAwait(false),
+                };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to load dashboard stats for {System}.", system.DisplayName);
-                setError(IntegrationDatabaseErrorFormatter.ToUserMessage(ex, system));
+                return new IntegrationDashboardEntry
+                {
+                    System = system,
+                    PageRoute = pageRoute,
+                    LoadError = IntegrationDatabaseErrorFormatter.ToUserMessage(ex, system),
+                };
             }
         }
     }

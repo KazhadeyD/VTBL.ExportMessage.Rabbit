@@ -1,126 +1,38 @@
-﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Главная";
-}
-
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4 p-lg-5">
-        <h1 class="display-5 mb-3">Добро пожаловать в VTBL ExportMessage Rabbit</h1>
-        <p class="lead mb-4">
-            Вы находитесь в сервисе мониторинга и анализа сообщений RabbitMQ. Здесь можно быстро найти нужную Task,
-            проверить историю статусов, увидеть ошибки обработки и содержимое сообщений.
-        </p>
-
-        <h2 class="h5 mb-3">Что делать дальше</h2>
-        <ol class="mb-4">
-            <li>Перейдите в раздел <strong>ККА</strong>.</li>
-            <li>Для интеграций <strong>NOVA</strong> и <strong>Remarketing</strong> — соответствующие разделы в меню.</li>
-            <li>Задайте фильтры: <code>Id</code>, <code>OperationKey</code>, диапазон <code>Created</code>, наличие <code>Error</code> или <code>SendMessage</code>.</li>
-            <li>Откройте найденную запись и проверьте Body, историю статусов и детали ошибок.</li>
-        </ol>
-
-        <h2 class="h5 mb-3">Сводка по KKA</h2>
-        @if (!string.IsNullOrEmpty(Model.KkaStatsError))
-        {
-            <div class="alert alert-warning mb-3" role="alert">@Model.KkaStatsError</div>
-        }
-        <div class="row mb-4">
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="card h-100 border-info">
-                    <div class="card-body">
-                        <div class="text-muted small">Всего записей</div>
-                        <div class="h3 mb-0">@Model.KkaStats.Total</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="card h-100 border-success">
-                    <div class="card-body">
-                        <div class="text-muted small">Успешных (без Error)</div>
-                        <div class="h3 mb-0 text-success">@Model.KkaStats.Successful</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-danger">
-                    <div class="card-body">
-                        <div class="text-muted small">Неуспешных (есть Error)</div>
-                        <div class="h3 mb-0 text-danger">@Model.KkaStats.Failed</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="h5 mb-3">Сводка по NOVA</h2>
-        @if (!string.IsNullOrEmpty(Model.NovaStatsError))
-        {
-            <div class="alert alert-warning mb-3" role="alert">@Model.NovaStatsError</div>
-        }
-        <div class="row mb-4">
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="card h-100 border-info">
-                    <div class="card-body">
-                        <div class="text-muted small">Всего записей</div>
-                        <div class="h3 mb-0">@Model.NovaStats.Total</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="card h-100 border-success">
-                    <div class="card-body">
-                        <div class="text-muted small">Успешных (без Error)</div>
-                        <div class="h3 mb-0 text-success">@Model.NovaStats.Successful</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-danger">
-                    <div class="card-body">
-                        <div class="text-muted small">Неуспешных (есть Error)</div>
-                        <div class="h3 mb-0 text-danger">@Model.NovaStats.Failed</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="h5 mb-3">Сводка по Remarketing</h2>
-        @if (!string.IsNullOrEmpty(Model.RemarketingStatsError))
-        {
-            <div class="alert alert-warning mb-3" role="alert">@Model.RemarketingStatsError</div>
-        }
-        <div class="row mb-4">
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="card h-100 border-info">
-                    <div class="card-body">
-                        <div class="text-muted small">Всего записей</div>
-                        <div class="h3 mb-0">@Model.RemarketingStats.Total</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-2 mb-md-0">
-                <div class="card h-100 border-success">
-                    <div class="card-body">
-                        <div class="text-muted small">Успешных (без Error)</div>
-                        <div class="h3 mb-0 text-success">@Model.RemarketingStats.Successful</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-danger">
-                    <div class="card-body">
-                        <div class="text-muted small">Неуспешных (есть Error)</div>
-                        <div class="h3 mb-0 text-danger">@Model.RemarketingStats.Failed</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-flex flex-wrap">
-            <a asp-page="/Kka" class="btn btn-primary mr-2 mb-2">Перейти в ККА</a>
-            <a asp-page="/Nova" class="btn btn-primary mr-2 mb-2">Перейти в NOVA</a>
-            <a asp-page="/Remarketing" class="btn btn-primary mr-2 mb-2">Перейти в Remarketing</a>
-            <a asp-page="/Debug" class="btn btn-outline-secondary mb-2">Открыть Debug</a>
-        </div>
-    </div>
-</div>
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4 p-lg-5">
+        <h1 class="h3 mb-1">Мониторинг сообщений RabbitMQ</h1>
+        <p class="text-muted mb-4">Сводка по интеграциям MSCRM_EXT</p>
+
+        <partial name="_IntegrationDashboardTable" model="Model.Systems" />
+
+        <p class="mt-4 mb-2">
+            <a class="btn btn-link btn-sm p-0 text-muted"
+               data-toggle="collapse"
+               href="#dashboard-onboarding"
+               role="button"
+               aria-expanded="false"
+               aria-controls="dashboard-onboarding">
+                Как пользоваться ▾
+            </a>
+        </p>
+        <div class="collapse" id="dashboard-onboarding">
+            <div class="card card-body bg-light border-0 small">
+                <p class="mb-2">
+                    Сервис для поиска Task, просмотра истории статусов, ошибок обработки и содержимого сообщений.
+                </p>
+                <ol class="mb-0 pl-3">
+                    <li>Выберите систему в таблице или в меню: <strong>ККА</strong>, <strong>NOVA</strong>, <strong>Remarketing</strong>.</li>
+                    <li>Задайте фильтры: <code>Id</code>, <code>OperationKey</code>, диапазон <code>Created</code>, наличие <code>Error</code> или <code>SendMessage</code>.</li>
+                    <li>Клик по числу ошибок открывает раздел с уже включённым фильтром «Есть Error в статусах».</li>
+                    <li>Откройте запись и проверьте Body, историю статусов и детали ошибок.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
