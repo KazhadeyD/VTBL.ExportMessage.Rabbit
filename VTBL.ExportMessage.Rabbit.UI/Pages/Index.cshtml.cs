@@ -32,22 +32,25 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
 
         public async Task OnGetAsync()
         {
-            var kkaTask = LoadEntryAsync(
+            // Один scoped DbContext на запрос — параллельные вызовы через Task.WhenAll недопустимы.
+            var entries = new IntegrationDashboardEntry[3];
+
+            entries[0] = await LoadEntryAsync(
                 IntegrationSystemInfo.Kka,
                 "Kka",
-                () => _kkaMessageService.GetDashboardStatsAsync());
+                () => _kkaMessageService.GetDashboardStatsAsync()).ConfigureAwait(false);
 
-            var novaTask = LoadEntryAsync(
+            entries[1] = await LoadEntryAsync(
                 IntegrationSystemInfo.Nova,
                 "Nova",
-                () => _novaMessageService.GetDashboardStatsAsync());
+                () => _novaMessageService.GetDashboardStatsAsync()).ConfigureAwait(false);
 
-            var remarketingTask = LoadEntryAsync(
+            entries[2] = await LoadEntryAsync(
                 IntegrationSystemInfo.Remarketing,
                 "Remarketing",
-                () => _remarketingMessageService.GetDashboardStatsAsync());
+                () => _remarketingMessageService.GetDashboardStatsAsync()).ConfigureAwait(false);
 
-            Systems = await Task.WhenAll(kkaTask, novaTask, remarketingTask).ConfigureAwait(false);
+            Systems = entries;
         }
 
         private async Task<IntegrationDashboardEntry> LoadEntryAsync(

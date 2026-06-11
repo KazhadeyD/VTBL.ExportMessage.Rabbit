@@ -113,7 +113,8 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
         public async Task<IntegrationDashboardStats> GetDashboardStatsAsync(
             CancellationToken cancellationToken = default)
         {
-            var baseQuery = BuildBaseQuery();
+            // Без Include: для COUNT достаточно навигации в Where; Include ломает перевод запроса.
+            var baseQuery = DbContext.Set<TMessage>().AsNoTracking();
 
             var total = await baseQuery
                 .CountAsync(cancellationToken)
