@@ -1,13 +1,20 @@
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+/* =============================================================================
+   site.css — глобальные стили VTBL.ExportMessage.Rabbit.UI
+   Подключается из Pages/Shared/_Layout.cshtml
+   ============================================================================= */
 
+/* -----------------------------------------------------------------------------
+   Шаблон ASP.NET Core: navbar-brand
+   ----------------------------------------------------------------------------- */
 a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
+/* -----------------------------------------------------------------------------
+   Базовые ссылки и компоненты Bootstrap (переопределение палитры)
+   ----------------------------------------------------------------------------- */
 a {
   color: #0366d6;
 }
@@ -24,8 +31,9 @@ a {
   border-color: #1861ac;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* -----------------------------------------------------------------------------
+   Типографика: базовый размер шрифта (mobile / desktop)
+   ----------------------------------------------------------------------------- */
 html {
   font-size: 14px;
 }
@@ -35,6 +43,9 @@ html {
   }
 }
 
+/* -----------------------------------------------------------------------------
+   Утилиты границ, теней и cookie-banner (шаблон)
+   ----------------------------------------------------------------------------- */
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
@@ -51,29 +62,35 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* -----------------------------------------------------------------------------
+   Sticky footer: html/body/footer (_Layout.cshtml)
+   Подвал фиксируется внизу viewport; body имеет отступ снизу под высоту footer.
+   ----------------------------------------------------------------------------- */
 html {
   position: relative;
   min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
   margin-bottom: 60px;
   background: linear-gradient(180deg, #f6fbff 0%, #ffffff 35%);
   color: #1f3c56;
 }
+
 .footer {
   position: absolute;
   bottom: 0;
   width: 100%;
   white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+  line-height: 60px;
+  text-align: center;
   background-color: #f3faff;
   border-top-color: #cde5f8 !important;
 }
 
+/* -----------------------------------------------------------------------------
+   Navbar: светлая тема приложения (голубая палитра)
+   ----------------------------------------------------------------------------- */
 .navbar.navbar-light {
   background-color: #f3faff !important;
   border-bottom-color: #cde5f8 !important;
@@ -108,6 +125,9 @@ body {
   color: #4f7ea7 !important;
 }
 
+/* -----------------------------------------------------------------------------
+   Footer: цвет текста и ссылок
+   ----------------------------------------------------------------------------- */
 .footer,
 .footer a {
   color: #4f7ea7;
@@ -118,7 +138,12 @@ body {
   color: #2b6cb0;
 }
 
-/* Integration pages */
+/* =============================================================================
+   Integration pages — ККА / NOVA / Remarketing
+   Разметка: _IntegrationPageLayout, partial'ы integration-*
+   ============================================================================= */
+
+/* --- CSS-переменные и каркас страницы (две колонки, фиксированная высота) --- */
 .integration-page {
   --integration-blue: #2b6cb0;
   --integration-blue-soft: #4c8dcf;
@@ -147,6 +172,7 @@ body {
   overflow: hidden;
 }
 
+/* --- Панели «Фильтры» и «Результаты» (card) --- */
 .integration-panel {
   border-color: var(--integration-border);
   background-color: var(--integration-white);
@@ -178,6 +204,7 @@ body {
   font-size: 0.95rem;
 }
 
+/* --- Правая колонка: прокручиваемый список результатов --- */
 .integration-results {
   height: 100%;
   max-height: none;
@@ -190,6 +217,13 @@ body {
   height: 100%;
 }
 
+.integration-results__summary {
+  margin-bottom: 1rem;
+  color: var(--integration-text);
+  font-weight: 500;
+}
+
+/* --- Карточка одного сообщения и вложенные Body / статусы --- */
 .integration-message-group {
   border: 1px solid var(--integration-border);
   border-radius: calc(var(--integration-radius) - 0.1rem);
@@ -236,18 +270,28 @@ body {
   background-color: #f7fcff;
 }
 
-.integration-filters-form label {
+.integration-page details > summary {
   font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--integration-text);
+  cursor: pointer;
 }
 
+.integration-page details > summary.text-primary {
+  color: var(--integration-blue) !important;
+}
+
+/* --- Левая колонка: форма фильтров --- */
 .integration-page__filters {
   min-width: 0;
 }
 
 .integration-filters-form {
   max-width: 100%;
+}
+
+.integration-filters-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--integration-text);
 }
 
 .integration-filter-id-input {
@@ -259,6 +303,7 @@ body {
   box-sizing: border-box;
 }
 
+/* --- Поля ввода и кнопки внутри integration-page --- */
 .integration-page .form-control,
 .integration-page .custom-select {
   border-color: var(--integration-border);
@@ -306,15 +351,7 @@ body {
   color: var(--integration-white);
 }
 
-.integration-page details > summary {
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.integration-page details > summary.text-primary {
-  color: var(--integration-blue) !important;
-}
-
+/* --- Таблица истории статусов --- */
 .integration-page .table thead.thead-light th {
   background-color: var(--integration-sky-light);
   border-color: var(--integration-border);
@@ -330,12 +367,7 @@ body {
   background-color: #f5fbff;
 }
 
-.integration-results__summary {
-  margin-bottom: 1rem;
-  color: var(--integration-text);
-  font-weight: 500;
-}
-
+/* --- Пагинация (_IntegrationPagination) --- */
 .integration-pagination .page-item.active .page-link {
   z-index: 1;
 }
