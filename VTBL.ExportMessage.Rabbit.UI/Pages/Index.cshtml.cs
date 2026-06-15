@@ -8,6 +8,9 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
+    /// <summary>
+    /// Главная страница с агрегированной сводкой по интеграционным системам.
+    /// </summary>
     public class IndexModel : PageModel
     {
         private readonly IKkaMessageService _kkaMessageService;
@@ -15,6 +18,9 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         private readonly IRemarketingMessageService _remarketingMessageService;
         private readonly ILogger<IndexModel> _logger;
 
+        /// <summary>
+        /// Инициализирует главную страницу.
+        /// </summary>
         public IndexModel(
             IKkaMessageService kkaMessageService,
             INovaMessageService novaMessageService,
@@ -27,9 +33,15 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             _logger = logger;
         }
 
+        /// <summary>
+        /// Строки дашборда по интеграционным системам.
+        /// </summary>
         public IReadOnlyList<IntegrationDashboardEntry> Systems { get; private set; }
             = Array.Empty<IntegrationDashboardEntry>();
 
+        /// <summary>
+        /// Загружает статистику систем для таблицы дашборда.
+        /// </summary>
         public async Task OnGetAsync()
         {
             // Один scoped DbContext на запрос — параллельные вызовы через Task.WhenAll недопустимы.

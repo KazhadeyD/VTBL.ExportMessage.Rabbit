@@ -1,5 +1,10 @@
+@*
+    Предупреждение об ошибке загрузки данных страницы интеграции.
+    Модель: IIntegrationPageModel (свойство ErrorMessage).
+*@
 @model VTBL.ExportMessage.Rabbit.UI.Models.IIntegrationPageModel
 
+@* Рендерится только при фатальной ошибке OnGetAsync (БД, конфигурация). *@
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
     <div class="alert alert-warning integration-page__data-error mb-3" role="alert">

@@ -1,20 +1,26 @@
-@using VTBL.ExportMessage.Rabbit.UI.Models
-@model IIntegrationPagingModel
-
-<label class="small text-muted mb-0 mr-1 d-none d-md-inline" for="integration-page-size">На стр.</label>
-<select id="integration-page-size"
-        class="form-control form-control-sm integration-page-size"
-        style="width: auto;"
-        aria-label="Записей на странице">
-    @foreach (var size in IntegrationPageSize.AllowedSizes)
-    {
-        if (size == Model.PageSize)
-        {
-            <option value="@size" selected="selected">@size</option>
-        }
-        else
-        {
-            <option value="@size">@size</option>
-        }
-    }
-</select>
+@*
+    Выбор размера страницы результатов (20 / 50 / 100).
+    Модель: IIntegrationPagingModel.
+    Значения: IntegrationPageSize.AllowedSizes.
+*@
+@using VTBL.ExportMessage.Rabbit.UI.Models
+@model IIntegrationPagingModel
+
+<label class="small text-muted mb-0 mr-1 d-none d-md-inline" for="integration-page-size">На стр.</label>
+@* Смена значения обрабатывается в integration-results-refresh.js (перезагрузка с pageSize). *@
+<select id="integration-page-size"
+        class="form-control form-control-sm integration-page-size"
+        style="width: auto;"
+        aria-label="Записей на странице">
+    @foreach (var size in IntegrationPageSize.AllowedSizes)
+    {
+        if (size == Model.PageSize)
+        {
+            <option value="@size" selected="selected">@size</option>
+        }
+        else
+        {
+            <option value="@size">@size</option>
+        }
+    }
+</select>

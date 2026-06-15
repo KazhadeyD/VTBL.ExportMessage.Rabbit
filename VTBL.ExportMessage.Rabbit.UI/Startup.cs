@@ -8,16 +8,29 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI
 {
+    /// <summary>
+    /// Конфигурация DI и HTTP-конвейера Razor Pages приложения.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Инициализирует конфигурацию приложения.
+        /// </summary>
+        /// <param name="configuration">Конфигурация окружения.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
+        /// <summary>
+        /// Конфигурация приложения.
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Регистрирует сервисы приложения в DI-контейнере.
+        /// </summary>
+        /// <param name="services">Коллекция сервисов.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
@@ -28,7 +41,11 @@ namespace VTBL.ExportMessage.Rabbit.UI
             services.AddScoped<IRemarketingMessageService, RemarketingMessageService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Настраивает HTTP-конвейер обработки запросов.
+        /// </summary>
+        /// <param name="app">Построитель конвейера.</param>
+        /// <param name="env">Окружение хостинга.</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

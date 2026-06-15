@@ -1,6 +1,14 @@
+@*
+    Форма GET-фильтров интеграционной страницы.
+    Модель: IIntegrationPageModel.
+    Partial: _IntegrationCreatedFilter.
+    Query: id, operationKey, hasError, hasSendMessage, createdFrom, createdTo, pageSize.
+*@
 @model VTBL.ExportMessage.Rabbit.UI.Models.IIntegrationPageModel
 
+@* method="get" — фильтры и пагинация живут в query string, можно делиться ссылкой. *@
 <form method="get" asp-page="@Model.PageName" class="integration-filters-form">
+    @* Точный поиск по GUID сообщения; маска задаётся в integration-filters.js. *@
     <div class="form-group">
         <label for="filter-id">Id</label>
         <input type="text"
@@ -20,6 +28,8 @@
             <small class="form-text text-danger">@Model.FilterIdError</small>
         }
     </div>
+
+    @* Список ключей из RabbitIntegrationOperationKeysConfiguration. *@
     <div class="form-group">
         <label for="filter-operation-key">OperationKey</label>
         <select class="form-control"
@@ -43,7 +53,10 @@
             <small class="form-text text-danger">@Model.FilterOperationKeyError</small>
         }
     </div>
+
     <partial name="_IntegrationCreatedFilter" model="Model" />
+
+    @* Флаги транслируются в EXISTS-подзапросы по StatusHistory на сервере. *@
     <div class="form-group mb-2">
         <div class="form-check">
             <input type="checkbox"
@@ -64,9 +77,13 @@
             <label class="form-check-label" for="filter-has-send-message">Есть SendMessage в статусах</label>
         </div>
     </div>
+
+    @* Сохраняем текущий pageSize при повторной отправке фильтра. *@
     <input type="hidden" name="pageSize" value="@Model.PageSize" />
+
     <div class="d-flex flex-wrap">
         <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2">Применить</button>
+        @* Сброс — переход на страницу без query string. *@
         <a asp-page="@Model.PageName" class="btn btn-outline-secondary btn-sm mb-2">Сбросить</a>
     </div>
 </form>

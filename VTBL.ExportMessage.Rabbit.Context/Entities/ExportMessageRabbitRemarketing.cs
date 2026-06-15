@@ -3,12 +3,20 @@ using System.Collections.Generic;
 
 namespace VTBL.ExportMessage.Rabbit.Context.Entities
 {
+    /// <summary>
+    /// Сообщение интеграции Remarketing.
+    /// </summary>
     public class ExportMessageRabbitRemarketing : IExportMessageRabbitMessage<ExportMessageRabbitRemarketingStatus>
     {
+        /// <inheritdoc />
         public Guid Id { get; set; }
 
+        /// <summary>
+        /// Внешний идентификатор сообщения RabbitMQ, если задан.
+        /// </summary>
         public Guid? MessageId { get; set; }
 
+        /// <inheritdoc />
         public string OperationKey { get; set; } = string.Empty;
 
         /// <summary>
@@ -16,10 +24,17 @@ namespace VTBL.ExportMessage.Rabbit.Context.Entities
         /// </summary>
         public RabbitIntegrationOperationKeysConfiguration OperationConfiguration { get; set; }
 
+        /// <summary>
+        /// Конечная точка обработки сообщения.
+        /// </summary>
         public string Endpoint { get; set; } = string.Empty;
 
+        /// <inheritdoc />
         public DateTime Created { get; set; }
 
+        /// <summary>
+        /// Тело сообщения.
+        /// </summary>
         public string Body { get; set; }
 
         /// <summary>

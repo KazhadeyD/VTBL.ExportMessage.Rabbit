@@ -10,6 +10,11 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
+    /// <summary>
+    /// Базовая PageModel для страниц интеграций: связывание фильтров, загрузка результатов и обработка ошибок.
+    /// </summary>
+    /// <typeparam name="TMessage">Тип сообщения интеграции.</typeparam>
+    /// <typeparam name="TFilter">Тип фильтра сообщений.</typeparam>
     public abstract class IntegrationPageModelBase<TMessage, TFilter> : PageModel, IIntegrationPageModel
         where TMessage : class
         where TFilter : IntegrationMessageFilter, new()
@@ -17,96 +22,148 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         private readonly ILogger _logger;
         private IReadOnlyList<TMessage> _messageGroups = Array.Empty<TMessage>();
 
+        /// <summary>
+        /// Инициализирует базовую PageModel интеграции.
+        /// </summary>
+        /// <param name="logger">Логгер страницы.</param>
         protected IntegrationPageModelBase(ILogger logger)
         {
             _logger = logger;
         }
 
+        /// <summary>
+        /// Сервис чтения сообщений текущей интеграции.
+        /// </summary>
         protected abstract IIntegrationMessageService<TMessage> MessageService { get; }
 
+        /// <summary>
+        /// Метаданные интеграционной системы для UI и ошибок БД.
+        /// </summary>
         protected abstract IntegrationSystemDescriptor SystemInfo { get; }
 
+        /// <inheritdoc />
         public abstract string PageName { get; }
 
+        /// <inheritdoc />
         public string PageTitle => SystemInfo.DisplayName;
 
+        /// <inheritdoc />
         [BindProperty(SupportsGet = true, Name = "id")]
         public string FilterId { get; set; }
 
+        /// <inheritdoc />
         [BindProperty(SupportsGet = true, Name = "operationKey")]
         public string FilterOperationKey { get; set; }
 
+        /// <inheritdoc />
         [BindProperty(SupportsGet = true, Name = "hasError")]
         public bool FilterHasError { get; set; }
 
+        /// <inheritdoc />
         [BindProperty(SupportsGet = true, Name = "hasSendMessage")]
         public bool FilterHasSendMessage { get; set; }
 
+        /// <inheritdoc />
         [BindProperty(SupportsGet = true, Name = "createdFrom")]
         public string FilterCreatedFrom { get; set; }
 
+        /// <inheritdoc />
         [BindProperty(SupportsGet = true, Name = "createdTo")]
         public string FilterCreatedTo { get; set; }
 
+        /// <summary>
+        /// Запрошенный пользователем размер страницы из query string.
+        /// </summary>
         [BindProperty(SupportsGet = true, Name = "pageSize")]
         public int? FilterPageSize { get; set; }
 
+        /// <inheritdoc />
         public IReadOnlyList<string> OperationKeys { get; private set; }
             = Array.Empty<string>();
 
+        /// <inheritdoc />
         IEnumerable IIntegrationPageModel.MessageGroups => _messageGroups;
 
+        /// <summary>
+        /// Словарь идентификатор статуса — наименование для отображения в UI.
+        /// </summary>
         public IReadOnlyDictionary<int, string> StatusNames { get; private set; }
             = new Dictionary<int, string>();
 
+        /// <inheritdoc />
         public int PageNumber { get; private set; } = 1;
 
+        /// <inheritdoc />
         public int PageSize => IntegrationPageSize.Normalize(FilterPageSize);
 
+        /// <inheritdoc />
         public int TotalCount { get; private set; }
 
+        /// <inheritdoc />
         public int TotalPages { get; private set; }
 
+        /// <inheritdoc />
         public bool HasPrevious { get; private set; }
 
+        /// <inheritdoc />
         public bool HasNext { get; private set; }
 
+        /// <inheritdoc />
         public int RangeFrom { get; private set; }
 
+        /// <inheritdoc />
         public int RangeTo { get; private set; }
 
+        /// <inheritdoc />
         public string FilterIdError { get; private set; }
 
+        /// <inheritdoc />
         public string FilterOperationKeyError { get; private set; }
 
+        /// <inheritdoc />
         public string FilterCreatedFromError { get; private set; }
 
+        /// <inheritdoc />
         public string FilterCreatedToError { get; private set; }
 
+        /// <inheritdoc />
         public string FilterCreatedRangeError { get; private set; }
 
+        /// <inheritdoc />
         public bool HasActiveFilter { get; private set; }
 
+        /// <inheritdoc />
         public string ErrorMessage { get; private set; }
 
+        /// <inheritdoc />
         public string ResultsErrorMessage { get; private set; }
 
+        /// <inheritdoc />
         public string FilterIdForRoute =>
             string.IsNullOrWhiteSpace(FilterId) ? null : FilterId.Trim();
 
+        /// <inheritdoc />
         public string FilterOperationKeyForRoute =>
             string.IsNullOrWhiteSpace(FilterOperationKey) ? null : FilterOperationKey.Trim();
 
+        /// <inheritdoc />
         public bool? FilterHasErrorForRoute => FilterHasError ? true : (bool?)null;
 
+        /// <inheritdoc />
         public bool? FilterHasSendMessageForRoute => FilterHasSendMessage ? true : (bool?)null;
 
+        /// <inheritdoc />
         public string FilterCreatedFromForRoute =>
             string.IsNullOrWhiteSpace(FilterCreatedFrom) ? null : FilterCreatedFrom.Trim();
 
+        /// <inheritdoc />
         public string FilterCreatedToForRoute =>
             string.IsNullOrWhiteSpace(FilterCreatedTo) ? null : FilterCreatedTo.Trim();
 
+        /// <summary>
+        /// Загружает страницу интеграции при полном рендеринге.
+        /// </summary>
+        /// <param name="pageNumber">Номер запрашиваемой страницы результатов.</param>
         public async Task OnGetAsync(int pageNumber = 1)
         {
             try
@@ -131,6 +188,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             }
         }
 
+        /// <summary>
+        /// Обновляет только панель результатов через partial view.
+        /// </summary>
+        /// <param name="pageNumber">Номер запрашиваемой страницы результатов.</param>
+        /// <returns>Partial view панели результатов.</returns>
         public async Task<IActionResult> OnGetResultsAsync(int pageNumber = 1)
         {
             ResultsErrorMessage = null;
@@ -159,6 +221,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             return Partial("_IntegrationResultsPanel", this);
         }
 
+        /// <inheritdoc />
         public string ResolveStatusName(int? statusId)
         {
             if (!statusId.HasValue)
@@ -169,6 +232,7 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             return StatusNames.TryGetValue(statusId.Value, out var name) ? name : statusId.Value.ToString();
         }
 
+        /// <inheritdoc />
         public IEnumerable<int> GetVisiblePageNumbers()
         {
             if (TotalPages <= 0)

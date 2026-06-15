@@ -1,4 +1,9 @@
-﻿@page
+﻿@*
+    Страница: главная (дашборд).
+    Модель: IndexModel.
+    Partial: _IntegrationDashboardTable.
+*@
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Главная";
@@ -9,8 +14,10 @@
         <h1 class="h3 mb-1">Мониторинг сообщений RabbitMQ</h1>
         <p class="text-muted mb-4">Сводка по интеграциям MSCRM_EXT</p>
 
+        @* Таблица агрегатов: ККА / NOVA / Remarketing (данные из IndexModel.Systems). *@
         <partial name="_IntegrationDashboardTable" model="Model.Systems" />
 
+        @* Краткая инструкция скрыта в collapse, чтобы не занимать место на дашборде. *@
         <p class="mt-4 mb-2">
             <a class="btn btn-link btn-sm p-0 text-muted"
                data-toggle="collapse"

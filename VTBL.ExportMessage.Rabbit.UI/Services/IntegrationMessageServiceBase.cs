@@ -10,14 +10,27 @@ using VTBL.ExportMessage.Rabbit.UI.Models;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Services
 {
+    /// <summary>
+    /// Базовая реализация сервиса интеграционных сообщений: фильтрация, пагинация и агрегаты дашборда.
+    /// </summary>
+    /// <typeparam name="TMessage">Тип сообщения интеграции.</typeparam>
+    /// <typeparam name="TStatus">Тип статуса сообщения.</typeparam>
     public class IntegrationMessageServiceBase<TMessage, TStatus> : IIntegrationMessageService<TMessage>
         where TMessage : class, IExportMessageRabbitMessage<TStatus>
         where TStatus : class, IExportMessageRabbitStatus
     {
         private readonly Func<MscrmExtDbContext, IQueryable<TMessage>> _baseQueryFactory;
 
+        /// <summary>
+        /// EF Core контекст базы данных.
+        /// </summary>
         protected readonly MscrmExtDbContext DbContext;
 
+        /// <summary>
+        /// Инициализирует базовый сервис интеграционных сообщений.
+        /// </summary>
+        /// <param name="dbContext">Контекст базы данных.</param>
+        /// <param name="baseQueryFactory">Фабрика базового запроса с нужными <c>Include</c>.</param>
         protected IntegrationMessageServiceBase(
             MscrmExtDbContext dbContext,
             Func<MscrmExtDbContext, IQueryable<TMessage>> baseQueryFactory)
@@ -26,6 +39,14 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             _baseQueryFactory = baseQueryFactory;
         }
 
+        /// <summary>
+        /// Загружает страницу сообщений с учетом фильтров.
+        /// </summary>
+        /// <param name="page">Номер страницы (начиная с 1).</param>
+        /// <param name="pageSize">Размер страницы.</param>
+        /// <param name="filter">Фильтр сообщений или <see langword="null"/>.</param>
+        /// <param name="cancellationToken">Токен отмены операции.</param>
+        /// <returns>Страница сообщений с метаданными пагинации.</returns>
         public async Task<IntegrationMessagesPageResult<TMessage>> GetMessagesPageAsync(
             int page,
             int pageSize,
@@ -87,6 +108,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             };
         }
 
+        /// <summary>
+        /// Возвращает словарь наименований статусов по их числовому идентификатору.
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены операции.</param>
+        /// <returns>Словарь идентификатор статуса — наименование.</returns>
         public async Task<IReadOnlyDictionary<int, string>> GetStatusNameMapAsync(
             CancellationToken cancellationToken = default)
         {
@@ -99,6 +125,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             return statusNames.ToDictionary(s => s.Id.Value, s => s.StatusName);
         }
 
+        /// <summary>
+        /// Возвращает доступные <c>OperationKey</c> в алфавитном порядке.
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены операции.</param>
+        /// <returns>Список ключей операций.</returns>
         public async Task<IReadOnlyList<string>> GetOperationKeysAsync(
             CancellationToken cancellationToken = default)
         {
@@ -110,6 +141,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
                 .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Вычисляет агрегаты для главной страницы: всего, с ошибками и без ошибок.
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены операции.</param>
+        /// <returns>Агрегированная статистика по системе.</returns>
         public async Task<IntegrationDashboardStats> GetDashboardStatsAsync(
             CancellationToken cancellationToken = default)
         {
@@ -134,6 +170,10 @@ namespace VTBL.ExportMessage.Rabbit.UI.Services
             };
         }
 
+        /// <summary>
+        /// Строит базовый запрос для сущности интеграции.
+        /// </summary>
+        /// <returns>Базовый <see cref="IQueryable{T}"/> с подключёнными навигациями.</returns>
         protected IQueryable<TMessage> BuildBaseQuery() => _baseQueryFactory(DbContext);
     }
 }

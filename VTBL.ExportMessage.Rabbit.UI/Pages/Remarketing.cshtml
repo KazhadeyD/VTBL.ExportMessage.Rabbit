@@ -1,26 +1,20 @@
+@*
+    Страница интеграции Remarketing.
+    Модель: RemarketingModel (наследник IntegrationPageModelBase).
+    Разметка: _IntegrationPageLayout.
+    Скрипты: integration-filters.js, integration-results-refresh.js.
+*@
 @page
-
 @model RemarketingModel
-
 @{
-
     ViewData["Title"] = Model.PageTitle;
-
     ViewData["MainContainerClass"] = "container-fluid";
-
 }
-
-
 
 <partial name="_IntegrationPageLayout" model="Model" />
 
-
-
 @section Scripts {
-
+    @* См. Kka.cshtml: те же клиентские скрипты для всех интеграций. *@
     <script src="~/js/integration-filters.js" asp-append-version="true"></script>
-
     <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
-
 }
-

@@ -1,42 +1,48 @@
-@page
-@model DebugModel
-@{
-    ViewData["Title"] = "Debug";
-}
-
-<h1 class="mb-4">Debug</h1>
-
-<form method="post" asp-page-handler="Load" class="mb-4">
-    <button type="submit" class="btn btn-primary">Показать ExportMessageRabbitStatusName</button>
-</form>
-
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
-}
-
-@if (Model.IsLoaded && string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>StatusName</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var row in Model.StatusNames)
-            {
-                <tr>
-                    <td>@(row.Id?.ToString() ?? "—")</td>
-                    <td>@row.StatusName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    @if (Model.StatusNames.Count == 0)
-    {
-        <p class="text-muted">Таблица пуста.</p>
-    }
-}
+@*
+    Отладочная страница: ручная загрузка справочника ExportMessageRabbitStatusName.
+    Модель: DebugModel. Handler: OnPostLoadAsync.
+*@
+@page
+@model DebugModel
+@{
+    ViewData["Title"] = "Debug";
+}
+
+<h1 class="mb-4">Debug</h1>
+
+@* POST OnPostLoadAsync — подгружает справочник статусов из БД по кнопке. *@
+<form method="post" asp-page-handler="Load" class="mb-4">
+    <button type="submit" class="btn btn-primary">Показать ExportMessageRabbitStatusName</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
+}
+
+@if (Model.IsLoaded && string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>StatusName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.StatusNames)
+            {
+                <tr>
+                    <td>@(row.Id?.ToString() ?? "—")</td>
+                    <td>@row.StatusName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* Отдельное сообщение, если запрос прошёл, но таблица пуста. *@
+    @if (Model.StatusNames.Count == 0)
+    {
+        <p class="text-muted">Таблица пуста.</p>
+    }
+}

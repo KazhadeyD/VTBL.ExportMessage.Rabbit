@@ -1,5 +1,10 @@
-﻿@using System.Linq
-@using VTBL.ExportMessage.Rabbit.UI
-@using VTBL.ExportMessage.Rabbit.UI.Models
-@namespace VTBL.ExportMessage.Rabbit.UI.Pages
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@*
+    Глобальные using и namespace для всех Razor Pages.
+*@
+@* Linq — foreach/Any в partial'ах без повторного @using. *@
+@using System.Linq
+@using VTBL.ExportMessage.Rabbit.UI
+@using VTBL.ExportMessage.Rabbit.UI.Models
+@namespace VTBL.ExportMessage.Rabbit.UI.Pages
+@* Tag Helpers: asp-page, asp-route-*, validation и т.д. *@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

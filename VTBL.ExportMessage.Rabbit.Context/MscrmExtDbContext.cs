@@ -3,27 +3,58 @@ using VTBL.ExportMessage.Rabbit.Context.Entities;
 
 namespace VTBL.ExportMessage.Rabbit.Context
 {
+    /// <summary>
+    /// EF Core контекст для базы <c>MSCRM_EXT</c> с таблицами интеграционных сообщений и справочников.
+    /// </summary>
     public class MscrmExtDbContext : DbContext
     {
+        /// <summary>
+        /// Создаёт контекст с параметрами подключения к БД.
+        /// </summary>
+        /// <param name="options">Параметры EF Core контекста.</param>
         public MscrmExtDbContext(DbContextOptions<MscrmExtDbContext> options)
             : base(options)
         {
         }
 
+        /// <summary>
+        /// Сообщения интеграции ККА.
+        /// </summary>
         public DbSet<ExportMessageRabbitKka> ExportMessageRabbitKkas { get; set; } = null!;
 
+        /// <summary>
+        /// Статусы сообщений интеграции ККА.
+        /// </summary>
         public DbSet<ExportMessageRabbitKkaStatus> ExportMessageRabbitKkaStatuses { get; set; } = null!;
 
+        /// <summary>
+        /// Сообщения интеграции NOVA.
+        /// </summary>
         public DbSet<ExportMessageRabbitNova> ExportMessageRabbitNovas { get; set; } = null!;
 
+        /// <summary>
+        /// Статусы сообщений интеграции NOVA.
+        /// </summary>
         public DbSet<ExportMessageRabbitNovaStatus> ExportMessageRabbitNovaStatuses { get; set; } = null!;
 
+        /// <summary>
+        /// Сообщения интеграции Remarketing.
+        /// </summary>
         public DbSet<ExportMessageRabbitRemarketing> ExportMessageRabbitRemarketings { get; set; } = null!;
 
+        /// <summary>
+        /// Статусы сообщений интеграции Remarketing.
+        /// </summary>
         public DbSet<ExportMessageRabbitRemarketingStatus> ExportMessageRabbitRemarketingStatuses { get; set; } = null!;
 
+        /// <summary>
+        /// Справочник наименований статусов.
+        /// </summary>
         public DbSet<ExportMessageRabbitStatusName> ExportMessageRabbitStatusNames { get; set; } = null!;
 
+        /// <summary>
+        /// Конфигурации ключей операций Rabbit.
+        /// </summary>
         public DbSet<RabbitIntegrationOperationKeysConfiguration> RabbitIntegrationOperationKeysConfigurations { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -9,11 +9,17 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
+    /// <summary>
+    /// Отладочная страница загрузки справочника статусов из БД.
+    /// </summary>
     public class DebugModel : PageModel
     {
         private readonly IExportMessageRabbitStatusNameService _statusNameService;
         private readonly ILogger<DebugModel> _logger;
 
+        /// <summary>
+        /// Инициализирует отладочную страницу.
+        /// </summary>
         public DebugModel(
             IExportMessageRabbitStatusNameService statusNameService,
             ILogger<DebugModel> logger)
@@ -22,17 +28,33 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             _logger = logger;
         }
 
+        /// <summary>
+        /// Загруженные записи справочника статусов.
+        /// </summary>
         public IReadOnlyList<ExportMessageRabbitStatusName> StatusNames { get; private set; }
             = Array.Empty<ExportMessageRabbitStatusName>();
 
+        /// <summary>
+        /// Признак того, что была выполнена попытка загрузки данных.
+        /// </summary>
         public bool IsLoaded { get; private set; }
 
+        /// <summary>
+        /// Текст ошибки загрузки справочника, если она произошла.
+        /// </summary>
         public string ErrorMessage { get; private set; }
 
+        /// <summary>
+        /// Обрабатывает GET-запрос к странице Debug.
+        /// </summary>
         public void OnGet()
         {
         }
 
+        /// <summary>
+        /// Загружает справочник статусов по кнопке на странице Debug.
+        /// </summary>
+        /// <returns>Та же страница с результатом загрузки.</returns>
         public async Task<IActionResult> OnPostLoadAsync()
         {
             try

@@ -1,26 +1,22 @@
+@*
+    Страница интеграции ККА.
+    Модель: KkaModel (наследник IntegrationPageModelBase).
+    Разметка: _IntegrationPageLayout.
+    Скрипты: integration-filters.js, integration-results-refresh.js.
+*@
 @page
-
 @model KkaModel
-
 @{
-
+    @* container-fluid — широкий layout для двухколоночной страницы интеграции. *@
     ViewData["Title"] = Model.PageTitle;
-
     ViewData["MainContainerClass"] = "container-fluid";
-
 }
 
-
-
+@* Вся разметка вынесена в общий partial — страница только подключает модель и скрипты. *@
 <partial name="_IntegrationPageLayout" model="Model" />
 
-
-
 @section Scripts {
-
+    @* Маска GUID в поле Id и AJAX-обновление панели результатов. *@
     <script src="~/js/integration-filters.js" asp-append-version="true"></script>
-
     <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
-
 }
-

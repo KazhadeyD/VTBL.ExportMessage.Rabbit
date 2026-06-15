@@ -6,8 +6,20 @@ using VTBL.ExportMessage.Rabbit.UI.Services;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Pages
 {
+    /// <summary>
+    /// Вспомогательная логика загрузки результатов и форматирования ошибок для интеграционных страниц.
+    /// </summary>
     internal static class IntegrationPageResultsSupport
     {
+        /// <summary>
+        /// Загружает страницу данных и нормализует номер страницы, если он вышел за диапазон.
+        /// </summary>
+        /// <typeparam name="TMessage">Тип сообщения интеграции.</typeparam>
+        /// <param name="messageService">Сервис чтения сообщений.</param>
+        /// <param name="pageNumber">Запрошенный номер страницы.</param>
+        /// <param name="pageSize">Размер страницы.</param>
+        /// <param name="filter">Применяемый фильтр.</param>
+        /// <param name="state">Объект состояния для заполнения результатами.</param>
         public static async Task LoadResultsAsync<TMessage>(
             IIntegrationMessageService<TMessage> messageService,
             int pageNumber,
@@ -42,6 +54,14 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
             state.StatusNames = await messageService.GetStatusNameMapAsync().ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Логирует исключение и возвращает пользовательское сообщение об ошибке.
+        /// </summary>
+        /// <param name="exception">Исходное исключение.</param>
+        /// <param name="system">Описание интеграционной системы.</param>
+        /// <param name="logger">Логгер страницы.</param>
+        /// <param name="logMessage">Техническое сообщение для лога.</param>
+        /// <returns>Пользовательское сообщение об ошибке.</returns>
         public static string FormatLoadError(
             Exception exception,
             IntegrationSystemDescriptor system,
@@ -53,6 +73,9 @@ namespace VTBL.ExportMessage.Rabbit.UI.Pages
         }
     }
 
+    /// <summary>
+    /// Промежуточное состояние результатов страницы интеграции.
+    /// </summary>
     internal class IntegrationResultsState
     {
         public object MessageGroups { get; set; }

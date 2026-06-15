@@ -5,8 +5,21 @@ using System.Linq;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Models
 {
+    /// <summary>
+    /// Валидирует и собирает типизированный фильтр интеграционных сообщений из строки запроса.
+    /// </summary>
     public static class IntegrationFilterBuilder
     {
+        /// <summary>
+        /// Проверяет входные значения и формирует экземпляр фильтра.
+        /// </summary>
+        /// <typeparam name="TFilter">Тип фильтра сообщений.</typeparam>
+        /// <param name="binding">Сырые значения из query string.</param>
+        /// <param name="operationKeys">Допустимые ключи операций.</param>
+        /// <param name="filter">Сформированный фильтр при успешной валидации.</param>
+        /// <param name="errors">Ошибки валидации при неуспешной проверке.</param>
+        /// <param name="hasActiveFilter">Признак того, что пользователь задал хотя бы один фильтр.</param>
+        /// <returns><see langword="true"/>, если фильтр валиден или фильтры не заданы.</returns>
         public static bool TryBuild<TFilter>(
             IntegrationFilterBinding binding,
             IReadOnlyList<string> operationKeys,
@@ -103,6 +116,11 @@ namespace VTBL.ExportMessage.Rabbit.UI.Models
             return true;
         }
 
+        /// <summary>
+        /// Форматирует дату для поля <c>datetime-local</c>.
+        /// </summary>
+        /// <param name="value">Дата и время.</param>
+        /// <returns>Строка в формате <c>yyyy-MM-ddTHH:mm</c>.</returns>
         public static string FormatForDateTimeLocal(DateTime value)
         {
             return value.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture);

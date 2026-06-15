@@ -2,8 +2,17 @@ using System;
 
 namespace VTBL.ExportMessage.Rabbit.UI.Models
 {
+    /// <summary>
+    /// Преобразует технические ошибки доступа к БД в пользовательские сообщения.
+    /// </summary>
     public static class IntegrationDatabaseErrorFormatter
     {
+        /// <summary>
+        /// Формирует текст ошибки для интерфейса в контексте конкретной интеграционной системы.
+        /// </summary>
+        /// <param name="exception">Исходное исключение.</param>
+        /// <param name="system">Описание интеграционной системы.</param>
+        /// <returns>Пользовательское сообщение об ошибке.</returns>
         public static string ToUserMessage(Exception exception, IntegrationSystemDescriptor system)
         {
             if (exception == null)

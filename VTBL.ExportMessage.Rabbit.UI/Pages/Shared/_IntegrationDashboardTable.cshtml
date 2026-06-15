@@ -1,80 +1,89 @@
-@model IReadOnlyList<VTBL.ExportMessage.Rabbit.UI.Models.IntegrationDashboardEntry>
-
-<div class="table-responsive">
-    <table class="table table-hover mb-0">
-        <thead class="thead-light">
-            <tr>
-                <th>Система</th>
-                <th class="text-right">Всего</th>
-                <th class="text-right">Успешных</th>
-                <th class="text-right">Ошибок</th>
-                <th class="text-right">% ошибок</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var entry in Model)
-            {
-                <tr>
-                    <td>
-                        <a asp-page="/@entry.PageRoute" class="font-weight-bold">@entry.System.DisplayName</a>
-                    </td>
-                    @if (!entry.IsLoaded)
-                    {
-                        <td colspan="5">
-                            <span class="text-warning small">@entry.LoadError</span>
-                        </td>
-                    }
-                    else
-                    {
-                        <td class="text-right">
-                            <a asp-page="/@entry.PageRoute" title="Все записи">@entry.Stats.Total</a>
-                        </td>
-                        <td class="text-right text-success">
-                            @if (entry.Stats.Successful > 0)
-                            {
-                                <a asp-page="/@entry.PageRoute" class="text-success" title="Без Error в статусах">@entry.Stats.Successful</a>
-                            }
-                            else
-                            {
-                                @entry.Stats.Successful
-                            }
-                        </td>
-                        <td class="text-right">
-                            @if (entry.Stats.Failed > 0)
-                            {
-                                <a asp-page="/@entry.PageRoute"
-                                   asp-route-hasError="true"
-                                   class="text-danger font-weight-bold"
-                                   title="С фильтром «Есть Error в статусах»">@entry.Stats.Failed</a>
-                            }
-                            else
-                            {
-                                <span class="text-muted">0</span>
-                            }
-                        </td>
-                        <td class="text-right">
-                            @if (entry.HasFailedPercent)
-                            {
-                                <span class="@(entry.FailedPercent > 0 ? "text-danger" : "text-muted")">@entry.FailedPercent%</span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">—</span>
-                            }
-                        </td>
-                        <td class="text-right text-nowrap">
-                            <a asp-page="/@entry.PageRoute" class="btn btn-sm btn-outline-primary">Открыть</a>
-                            @if (entry.Stats.Failed > 0)
-                            {
-                                <a asp-page="/@entry.PageRoute"
-                                   asp-route-hasError="true"
-                                   class="btn btn-sm btn-outline-danger ml-1">Ошибки</a>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+@*
+    Таблица сводки на главной: система, всего, успешных, ошибок, %.
+    Модель: IReadOnlyList<IntegrationDashboardEntry>.
+    Ссылки ведут на Razor Pages и фильтр ?hasError=true.
+*@
+@model IReadOnlyList<VTBL.ExportMessage.Rabbit.UI.Models.IntegrationDashboardEntry>
+
+<div class="table-responsive">
+    <table class="table table-hover mb-0">
+        <thead class="thead-light">
+            <tr>
+                <th>Система</th>
+                <th class="text-right">Всего</th>
+                <th class="text-right">Успешных</th>
+                <th class="text-right">Ошибок</th>
+                <th class="text-right">% ошибок</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model)
+            {
+                <tr>
+                    <td>
+                        <a asp-page="/@entry.PageRoute" class="font-weight-bold">@entry.System.DisplayName</a>
+                    </td>
+
+                    @* Ошибка загрузки статистики (нет таблиц, сбой БД) — одна ячейка на всю строку. *@
+                    @if (!entry.IsLoaded)
+                    {
+                        <td colspan="5">
+                            <span class="text-warning small">@entry.LoadError</span>
+                        </td>
+                    }
+                    else
+                    {
+                        @* Числа кликабельны: переход на страницу интеграции с нужным контекстом. *@
+                        <td class="text-right">
+                            <a asp-page="/@entry.PageRoute" title="Все записи">@entry.Stats.Total</a>
+                        </td>
+                        <td class="text-right text-success">
+                            @if (entry.Stats.Successful > 0)
+                            {
+                                <a asp-page="/@entry.PageRoute" class="text-success" title="Без Error в статусах">@entry.Stats.Successful</a>
+                            }
+                            else
+                            {
+                                @entry.Stats.Successful
+                            }
+                        </td>
+                        <td class="text-right">
+                            @if (entry.Stats.Failed > 0)
+                            {
+                                @* asp-route-hasError — тот же фильтр, что чекбокс на странице интеграции. *@
+                                <a asp-page="/@entry.PageRoute"
+                                   asp-route-hasError="true"
+                                   class="text-danger font-weight-bold"
+                                   title="С фильтром «Есть Error в статусах»">@entry.Stats.Failed</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">0</span>
+                            }
+                        </td>
+                        <td class="text-right">
+                            @if (entry.HasFailedPercent)
+                            {
+                                <span class="@(entry.FailedPercent > 0 ? "text-danger" : "text-muted")">@entry.FailedPercent%</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td class="text-right text-nowrap">
+                            <a asp-page="/@entry.PageRoute" class="btn btn-sm btn-outline-primary">Открыть</a>
+                            @if (entry.Stats.Failed > 0)
+                            {
+                                <a asp-page="/@entry.PageRoute"
+                                   asp-route-hasError="true"
+                                   class="btn btn-sm btn-outline-danger ml-1">Ошибки</a>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,3 +1,8 @@
+@*
+    Общий layout приложения: navbar, footer, подключение CSS/JS.
+    ViewData: Title, MainContainerClass (опционально, для integration-страниц — container-fluid).
+    Partial: _IntegrationNavItems.
+*@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +26,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Главная</a>
                         </li>
+                        @* Ссылки на ККА / NOVA / Remarketing — отдельный partial без привязки layout к системе. *@
                         <partial name="_IntegrationNavItems" />
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Debug">Debug</a>
@@ -31,6 +37,8 @@
             </div>
         </nav>
     </header>
+
+    @* MainContainerClass задаётся на integration-страницах (container-fluid), иначе — container. *@
     <div class="@(ViewData["MainContainerClass"] as string ?? "container")">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -43,6 +51,7 @@
         </div>
     </footer>
 
+    @* Базовые скрипты; страницы добавляют своё через @section Scripts. *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
