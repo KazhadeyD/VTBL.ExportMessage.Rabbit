@@ -88,6 +88,7 @@ docker compose down          # контейнеры остановлены, да
 ## Структура репозитория
 
 ```
+VTBL.RabbitIntegration.Monitor.sln
 docker-compose.yml
 docker/mssql/init/                    # SQL-скрипты инициализации
 VTBL.RabbitIntegration.Monitor.Context/    # EF Core, сущности, MscrmExtDbContext
@@ -234,7 +235,8 @@ VTBL.RabbitIntegration.Monitor.UI/Pages/Index.cshtml.cs              # дашб�
 
 | Дата | Изменение |
 |------|-----------|
-| 2026-06-15 | Переименование решения и проектов: `VTBL.ExportMessage.Rabbit` → `VTBL.RabbitIntegration.Monitor` (папки, namespace, slnx, docker-том, пути в README/vscode) |
+| 2026-06-15 | Файл решения: `VTBL.RabbitIntegration.Monitor.slnx` заменён на классический `VTBL.RabbitIntegration.Monitor.sln` |
+| 2026-06-15 | Переименование решения и проектов: `VTBL.ExportMessage.Rabbit` → `VTBL.RabbitIntegration.Monitor` (папки, namespace, docker-том, пути в README/vscode) |
 | 2026-06-15 | site.css: секционные комментарии по блокам (layout, navbar, footer, integration-*) |
 | 2026-06-15 | README: чеклист новой системы — убран подраздел про SQL-скрипты БД |
 | 2026-06-15 | README: подробный чеклист добавления новой интеграционной системы (эталон Remarketing, актуальные partial'ы и регистрация) |
