@@ -120,6 +120,7 @@ VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-06-11 | Shared: CSS-классы `integration-*` вместо `kka-*`; навигация в `_IntegrationNavItems` (подписи из `IntegrationSystemInfo`) |
 | 2026-06-11 | Исправлена сводка на главной: последовательная загрузка статистики (общий `DbContext`), COUNT без лишних `Include` |
 | 2026-06-11 | Главная: компактная таблица сводки (`_IntegrationDashboardTable`), ссылки на разделы и фильтр ошибок; onboarding в collapse |
 | 2026-06-11 | Общие partial'ы `_IntegrationPageLayout` и `_IntegrationFiltersForm`; единый `IntegrationMessageServiceBase` с `Include(OrderBy RowVersion)`; интерфейсы `IExportMessageRabbitMessage` / `IExportMessageRabbitStatus` |

@@ -1,7 +1,7 @@
 @using System.Linq
 @model VTBL.ExportMessage.Rabbit.UI.Models.IIntegrationPagingModel
 
-<nav class="kka-pagination" aria-label="Навигация по страницам">
+<nav class="integration-pagination" aria-label="Навигация по страницам">
     <ul class="pagination pagination-sm flex-wrap mb-2">
         <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
             @if (Model.HasPrevious)

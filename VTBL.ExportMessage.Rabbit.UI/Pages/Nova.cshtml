@@ -1,13 +1,26 @@
-@page
-@model NovaModel
-@{
-    ViewData["Title"] = Model.PageTitle;
-    ViewData["MainContainerClass"] = "container-fluid";
-}
-
-<partial name="_IntegrationPageLayout" model="Model" />
-
-@section Scripts {
-    <script src="~/js/kka-filters.js" asp-append-version="true"></script>
-    <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
-}
+@page
+
+@model NovaModel
+
+@{
+
+    ViewData["Title"] = Model.PageTitle;
+
+    ViewData["MainContainerClass"] = "container-fluid";
+
+}
+
+
+
+<partial name="_IntegrationPageLayout" model="Model" />
+
+
+
+@section Scripts {
+
+    <script src="~/js/integration-filters.js" asp-append-version="true"></script>
+
+    <script src="~/js/integration-results-refresh.js" asp-append-version="true"></script>
+
+}
+

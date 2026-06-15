@@ -1,4 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
@@ -118,139 +118,139 @@ body {
   color: #2b6cb0;
 }
 
-/* KKA page */
-.kka-page {
-  --kka-blue: #2b6cb0;
-  --kka-blue-soft: #4c8dcf;
-  --kka-sky: #d9efff;
-  --kka-sky-light: #eef8ff;
-  --kka-white: #ffffff;
-  --kka-border: #bdddf5;
-  --kka-text: #1f3c56;
-  --kka-radius: 0.55rem;
+/* Integration pages */
+.integration-page {
+  --integration-blue: #2b6cb0;
+  --integration-blue-soft: #4c8dcf;
+  --integration-sky: #d9efff;
+  --integration-sky-light: #eef8ff;
+  --integration-white: #ffffff;
+  --integration-border: #bdddf5;
+  --integration-text: #1f3c56;
+  --integration-radius: 0.55rem;
   height: calc(100vh - 11.5rem);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.kka-page__title {
+.integration-page__title {
   margin-bottom: 1.4rem;
-  color: var(--kka-blue);
+  color: var(--integration-blue);
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 
-.kka-page__layout {
+.integration-page__layout {
   min-height: 0;
   flex: 1 1 auto;
   overflow: hidden;
 }
 
-.kka-panel {
-  border-color: var(--kka-border);
-  background-color: var(--kka-white);
+.integration-panel {
+  border-color: var(--integration-border);
+  background-color: var(--integration-white);
   box-shadow: 0 8px 20px rgba(43, 108, 176, 0.08);
-  border-radius: var(--kka-radius);
+  border-radius: var(--integration-radius);
   overflow: hidden;
 }
 
-.kka-panel__header {
-  background-color: var(--kka-sky-light);
-  border-bottom: 1px solid var(--kka-border);
+.integration-panel__header {
+  background-color: var(--integration-sky-light);
+  border-bottom: 1px solid var(--integration-border);
   font-weight: 600;
   padding-top: 0.85rem;
   padding-bottom: 0.85rem;
 }
 
-.kka-panel__title {
+.integration-panel__title {
   font-size: 1.1rem;
-  color: var(--kka-blue);
+  color: var(--integration-blue);
 }
 
-.kka-panel__body {
+.integration-panel__body {
   min-height: 20rem;
   padding: 1.1rem;
   min-height: 0;
 }
 
-.kka-panel__placeholder {
+.integration-panel__placeholder {
   font-size: 0.95rem;
 }
 
-.kka-results {
+.integration-results {
   height: 100%;
   max-height: none;
   overflow-y: auto;
   scroll-behavior: smooth;
 }
 
-.kka-page__results,
-.kka-page__results .kka-panel {
+.integration-page__results,
+.integration-page__results .integration-panel {
   height: 100%;
 }
 
-.kka-message-group {
-  border: 1px solid var(--kka-border);
-  border-radius: calc(var(--kka-radius) - 0.1rem);
+.integration-message-group {
+  border: 1px solid var(--integration-border);
+  border-radius: calc(var(--integration-radius) - 0.1rem);
   padding: 1.05rem;
   margin-bottom: 1.1rem;
-  background-color: var(--kka-white);
+  background-color: var(--integration-white);
   box-shadow: 0 4px 12px rgba(76, 141, 207, 0.1);
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.kka-message-group:hover {
+.integration-message-group:hover {
   border-color: #a7d1ee;
   box-shadow: 0 8px 18px rgba(76, 141, 207, 0.14);
 }
 
-.kka-message-group:last-child {
+.integration-message-group:last-child {
   margin-bottom: 0;
 }
 
-.kka-message-group__header {
+.integration-message-group__header {
   border-bottom: 1px solid #d7eaf9;
   padding-bottom: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.kka-message-group__id {
+.integration-message-group__id {
   font-size: 1rem;
   word-break: break-all;
 }
 
-.kka-message-group__body {
+.integration-message-group__body {
   max-height: 12rem;
   overflow: auto;
   white-space: pre-wrap;
   word-break: break-word;
-  background-color: var(--kka-sky-light);
+  background-color: var(--integration-sky-light);
   padding: 0.65rem;
   border-radius: 0.4rem;
   border: 1px solid #d7eaf9;
-  color: var(--kka-text);
+  color: var(--integration-text);
 }
 
-.kka-status-expand-row td {
+.integration-status-expand-row td {
   background-color: #f7fcff;
 }
 
-.kka-filters-form label {
+.integration-filters-form label {
   font-weight: 600;
   font-size: 0.9rem;
-  color: var(--kka-text);
+  color: var(--integration-text);
 }
 
-.kka-page__filters {
+.integration-page__filters {
   min-width: 0;
 }
 
-.kka-filters-form {
+.integration-filters-form {
   max-width: 100%;
 }
 
-.kka-filter-id-input {
+.integration-filter-id-input {
   font-family: Consolas, "Courier New", monospace;
   font-size: 0.8125rem;
   width: 100%;
@@ -259,106 +259,106 @@ body {
   box-sizing: border-box;
 }
 
-.kka-page .form-control,
-.kka-page .custom-select {
-  border-color: var(--kka-border);
+.integration-page .form-control,
+.integration-page .custom-select {
+  border-color: var(--integration-border);
   border-radius: 0.4rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.kka-page .form-control:focus,
-.kka-page .custom-select:focus {
-  border-color: var(--kka-blue-soft);
+.integration-page .form-control:focus,
+.integration-page .custom-select:focus {
+  border-color: var(--integration-blue-soft);
   box-shadow: 0 0 0 0.2rem rgba(76, 141, 207, 0.2);
 }
 
-.kka-page .btn-primary {
-  background-color: var(--kka-blue);
-  border-color: var(--kka-blue);
+.integration-page .btn-primary {
+  background-color: var(--integration-blue);
+  border-color: var(--integration-blue);
   border-radius: 0.4rem;
   transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.kka-page .btn-primary:hover,
-.kka-page .btn-primary:focus {
+.integration-page .btn-primary:hover,
+.integration-page .btn-primary:focus {
   background-color: #245a92;
   border-color: #245a92;
   box-shadow: 0 0 0 0.12rem rgba(43, 108, 176, 0.25);
 }
 
-.kka-page .btn-outline-secondary {
-  color: var(--kka-blue);
-  border-color: var(--kka-border);
-  background-color: var(--kka-white);
+.integration-page .btn-outline-secondary {
+  color: var(--integration-blue);
+  border-color: var(--integration-border);
+  background-color: var(--integration-white);
   border-radius: 0.4rem;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.kka-page .btn-outline-secondary:hover,
-.kka-page .btn-outline-secondary:focus {
-  color: var(--kka-blue);
-  border-color: var(--kka-blue-soft);
-  background-color: var(--kka-sky-light);
+.integration-page .btn-outline-secondary:hover,
+.integration-page .btn-outline-secondary:focus {
+  color: var(--integration-blue);
+  border-color: var(--integration-blue-soft);
+  background-color: var(--integration-sky-light);
 }
 
-.kka-page .badge-secondary {
-  background-color: var(--kka-blue-soft);
-  color: var(--kka-white);
+.integration-page .badge-secondary {
+  background-color: var(--integration-blue-soft);
+  color: var(--integration-white);
 }
 
-.kka-page details > summary {
+.integration-page details > summary {
   font-weight: 600;
   cursor: pointer;
 }
 
-.kka-page details > summary.text-primary {
-  color: var(--kka-blue) !important;
+.integration-page details > summary.text-primary {
+  color: var(--integration-blue) !important;
 }
 
-.kka-page .table thead.thead-light th {
-  background-color: var(--kka-sky-light);
-  border-color: var(--kka-border);
-  color: var(--kka-text);
+.integration-page .table thead.thead-light th {
+  background-color: var(--integration-sky-light);
+  border-color: var(--integration-border);
+  color: var(--integration-text);
 }
 
-.kka-page .table-bordered td,
-.kka-page .table-bordered th {
+.integration-page .table-bordered td,
+.integration-page .table-bordered th {
   border-color: #dceefd;
 }
 
-.kka-page .table tbody tr:hover {
+.integration-page .table tbody tr:hover {
   background-color: #f5fbff;
 }
 
-.kka-results__summary {
+.integration-results__summary {
   margin-bottom: 1rem;
-  color: var(--kka-text);
+  color: var(--integration-text);
   font-weight: 500;
 }
 
-.kka-pagination .page-item.active .page-link {
+.integration-pagination .page-item.active .page-link {
   z-index: 1;
 }
 
-.kka-pagination .page-link {
-  color: var(--kka-blue);
+.integration-pagination .page-link {
+  color: var(--integration-blue);
   border-color: #dceefd;
   transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.kka-pagination .page-link:hover {
+.integration-pagination .page-link:hover {
   color: #245a92;
-  background-color: var(--kka-sky-light);
-  border-color: var(--kka-border);
+  background-color: var(--integration-sky-light);
+  border-color: var(--integration-border);
 }
 
-.kka-pagination .page-item.active .page-link {
-  background-color: var(--kka-blue);
-  border-color: var(--kka-blue);
-  color: var(--kka-white);
+.integration-pagination .page-item.active .page-link {
+  background-color: var(--integration-blue);
+  border-color: var(--integration-blue);
+  color: var(--integration-white);
 }
 
-.kka-pagination .page-item.disabled .page-link {
+.integration-pagination .page-item.disabled .page-link {
   color: #88aac9;
-  background-color: var(--kka-white);
+  background-color: var(--integration-white);
 }
