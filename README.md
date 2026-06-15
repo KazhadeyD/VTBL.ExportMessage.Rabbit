@@ -94,33 +94,148 @@ VTBL.ExportMessage.Rabbit.Context/    # EF Core, сущности, MscrmExtDbCon
 VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
 ```
 
-## Добавление новой системы (по шаблону KKA/NOVA)
+## Добавление новой интеграционной системы
 
-Архитектура подготовлена для расширения на следующие интеграции с тем же устройством (KKA, NOVA, Remarketing — по одному шаблону).
+Эталон последней добавленной системы — **Remarketing**. Копируйте её файлы и заменяйте имя системы (`Remarketing` → `MySystem`). Архитектура общая: фильтры, пагинация, partial'ы, базовый сервис и PageModel уже реализованы — для новой системы создаётся только тонкий слой-обёртка.
 
-1. Добавьте сущности в `VTBL.ExportMessage.Rabbit.Context/Entities`:
-   - `ExportMessageRabbit<System>.cs`
-   - `ExportMessageRabbit<System>Status.cs`
-2. Зарегистрируйте `DbSet` и Fluent API в `MscrmExtDbContext`.
-3. Добавьте SQL-таблицы в `docker/mssql/init/02-create-tables.sql` по образцу KKA/NOVA.
-4. Создайте UI-модели фильтра/результата:
-   - `VTBL.ExportMessage.Rabbit.UI/Models/<System>MessageFilter.cs`
-   - `VTBL.ExportMessage.Rabbit.UI/Models/<System>MessagesPageResult.cs`
-5. Реализуйте `IExportMessageRabbitMessage<TStatus>` и `IExportMessageRabbitStatus` на сущностях.
-6. Создайте сервис:
-   - `I<System>MessageService` + `<System>MessageService`
-   - Наследник `IntegrationMessageServiceBase<TMessage, TStatus>` с `Include` статусов: `.Include(m => m.StatusHistory.OrderBy(s => s.RowVersion))`.
-7. Добавьте Razor Pages:
-   - `Pages/<System>.cshtml` — подключение `_IntegrationPageLayout`
-   - `Pages/<System>.cshtml.cs` (наследник `IntegrationPageModelBase<TMessage, TFilter>`)
-8. Подключите DI в `Startup.cs` и пункт меню в `_Layout.cshtml`.
-9. Для пагинации используйте общий partial `Pages/Shared/_IntegrationPagination.cshtml`.
+### Что менять не нужно
+
+Следующие компоненты **общие для всех систем** — правки не требуются:
+
+| Компонент | Назначение |
+|-----------|------------|
+| `Pages/Shared/_IntegrationPageLayout.cshtml` | Двухколоночный layout (фильтры + результаты) |
+| `Pages/Shared/_IntegrationFiltersForm.cshtml` | GET-форма фильтров |
+| `Pages/Shared/_IntegrationCreatedFilter.cshtml` | Поля Created от/до |
+| `Pages/Shared/_IntegrationResultsPanel.cshtml` | Список сообщений, статусы, пагинация |
+| `Pages/Shared/_IntegrationPagination.cshtml` | Навигация по страницам |
+| `Pages/Shared/_IntegrationPageSizeSelector.cshtml` | Выбор 20 / 50 / 100 |
+| `Pages/Shared/_IntegrationDataErrorAlert.cshtml` | Ошибка загрузки страницы |
+| `Pages/IntegrationPageModelBase.cs` | Общая логика OnGet / handler `Results` |
+| `Services/IntegrationMessageServiceBase.cs` | Запросы, фильтрация, статистика дашборда |
+| `Models/IntegrationMessageFilter.cs` | Базовый фильтр (Id, OperationKey, Created, флаги) |
+| `wwwroot/js/integration-filters.js` | Маска GUID в поле Id |
+| `wwwroot/js/integration-results-refresh.js` | AJAX-обновление панели результатов |
+
+### Чеклист по слоям
+
+Подставьте вместо `<System>` имя в PascalCase (например `Remarketing`), вместо `<SYSTEM>` — имя таблицы в SQL (например `REMARKETING`).
+
+#### 1. EF Core (Context)
+
+| Шаг | Файл | Эталон |
+|-----|------|--------|
+| Сущность сообщения | `Context/Entities/ExportMessageRabbit<System>.cs` | `ExportMessageRabbitRemarketing.cs` |
+| Сущность статуса | `Context/Entities/ExportMessageRabbit<System>Status.cs` | `ExportMessageRabbitRemarketingStatus.cs` |
+| DbSet + Fluent API | `Context/MscrmExtDbContext.cs` | блок `ExportMessageRabbitRemarketing` (~строки 41–48, 154–198) |
+| Навигация OperationKey | `Context/Entities/RabbitIntegrationOperationKeysConfiguration.cs` | свойство `RemarketingExportMessages` + `WithMany` в Fluent API |
+
+На сущностях реализуйте:
+
+- `IExportMessageRabbitMessage<TStatus>` — на классе сообщения
+- `IExportMessageRabbitStatus` — на классе статуса
+
+Связи **логические** (FK в БД нет): `OperationKey` → `RabbitIntegrationOperationKeysConfiguration.Key`, `IntegrationId` → `Id` сообщения.
+
+#### 2. UI — модели
+
+Тонкие наследники базовых типов (тело класса пустое):
+
+| Файл | Базовый класс | Эталон |
+|------|---------------|--------|
+| `UI/Models/<System>MessageFilter.cs` | `IntegrationMessageFilter` | `RemarketingMessageFilter.cs` |
+| `UI/Models/<System>MessagesPageResult.cs` | `IntegrationMessagesPageResult<TMessage>` | `RemarketingMessagesPageResult.cs` |
+
+Добавьте дескриптор в `UI/Models/IntegrationSystemInfo.cs`:
+
+```csharp
+public static readonly IntegrationSystemDescriptor MySystem = new IntegrationSystemDescriptor(
+    "Отображаемое имя",           // подпись в navbar и на дашборде
+    "ExportMessageRabbitMYSYSTEM",  // таблица сообщений
+    "ExportMessageRabbitMYSYSTEMStatus");
+```
+
+#### 3. UI — сервис
+
+| Файл | Эталон |
+|------|--------|
+| `UI/Services/I<System>MessageService.cs` | `IRemarketingMessageService.cs` — наследует `IIntegrationMessageService<TMessage>` |
+| `UI/Services/<System>MessageService.cs` | `RemarketingMessageService.cs` |
+
+Сервис наследует `IntegrationMessageServiceBase<TMessage, TStatus>` и передаёт фабрику запроса с обязательными `Include`:
+
+```csharp
+: base(dbContext, ctx => ctx.ExportMessageRabbitMySystems
+    .AsNoTracking()
+    .Include(m => m.StatusHistory.OrderBy(s => s.RowVersion))
+    .Include(m => m.OperationConfiguration))
+```
+
+Сортировка статусов по `RowVersion`, не по `Created`.
+
+#### 4. UI — Razor Pages
+
+| Файл | Эталон | Содержимое |
+|------|--------|------------|
+| `Pages/<System>.cshtml.cs` | `Remarketing.cshtml.cs` | Наследник `IntegrationPageModelBase<TMessage, TFilter>`; три override: `MessageService`, `SystemInfo`, `PageName` |
+| `Pages/<System>.cshtml` | `Remarketing.cshtml` | `ViewData["MainContainerClass"] = "container-fluid"`, partial `_IntegrationPageLayout`, секция `Scripts` с `integration-filters.js` и `integration-results-refresh.js` |
+
+`PageName` должен совпадать с именем Razor Page **без** слэша (например `"Remarketing"` → маршрут `/Remarketing`).
+
+#### 5. Регистрация в приложении
+
+| Место | Действие | Эталон |
+|-------|----------|--------|
+| `UI/Startup.cs` | `services.AddScoped<I<System>MessageService, <System>MessageService>()` | строка с `IRemarketingMessageService` |
+| `Pages/Shared/_IntegrationNavItems.cshtml` | `<li>` с `asp-page="/<System>"` и `@IntegrationSystemInfo.<System>.DisplayName` | пункт Remarketing |
+| `Pages/Index.cshtml.cs` | Внедрить `I<System>MessageService`, добавить `LoadEntryAsync(...)` в `OnGetAsync` | блок `entries[2]` для Remarketing |
+
+На главной статистика загружается **последовательно** (один scoped `DbContext` на запрос — `Task.WhenAll` недопустим). При добавлении системы увеличьте размер массива `entries` (сейчас `[3]`).
+
+#### 6. Проверка
+
+```powershell
+dotnet build VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj -o _build_out
+```
+
+Далее вручную:
+
+1. `/MySystem` — страница открывается, фильтры и пагинация работают.
+2. Главная `/` — строка новой системы в таблице дашборда (`_IntegrationDashboardTable`).
+3. Navbar — пункт с `DisplayName` из `IntegrationSystemInfo`.
+4. Клик по числу ошибок на дашборде ведёт на `/MySystem?hasError=true`.
+5. Кнопка «Обновить» в результатах перезагружает панель без полной перезагрузки страницы.
+
+### Сводка новых файлов (минимум)
+
+```
+VTBL.ExportMessage.Rabbit.Context/Entities/
+  ExportMessageRabbit<System>.cs
+  ExportMessageRabbit<System>Status.cs
+VTBL.ExportMessage.Rabbit.Context/MscrmExtDbContext.cs            # DbSet + Fluent API
+VTBL.ExportMessage.Rabbit.Context/Entities/
+  RabbitIntegrationOperationKeysConfiguration.cs                  # ICollection навиг.
+VTBL.ExportMessage.Rabbit.UI/Models/
+  <System>MessageFilter.cs
+  <System>MessagesPageResult.cs
+  IntegrationSystemInfo.cs                                        # новый дескриптор
+VTBL.ExportMessage.Rabbit.UI/Services/
+  I<System>MessageService.cs
+  <System>MessageService.cs
+VTBL.ExportMessage.Rabbit.UI/Pages/
+  <System>.cshtml
+  <System>.cshtml.cs
+VTBL.ExportMessage.Rabbit.UI/Startup.cs                           # DI
+VTBL.ExportMessage.Rabbit.UI/Pages/Shared/_IntegrationNavItems.cshtml
+VTBL.ExportMessage.Rabbit.UI/Pages/Index.cshtml.cs              # дашборд
+```
 
 ## История изменений
 
 | Дата | Изменение |
 |------|-----------|
-| 2026-06-15 | Razor Pages (*.cshtml): секционные комментарии @* ... *@ внутри разметки (блоки фильтров, результаты, пагинация, условия) |
+| 2026-06-15 | README: чеклист новой системы — убран подраздел про SQL-скрипты БД |
+| 2026-06-15 | README: подробный чеклист добавления новой интеграционной системы (эталон Remarketing, актуальные partial'ы и регистрация) |
 | 2026-06-15 | Razor Pages (*.cshtml): заголовочные комментарии @* ... *@ с назначением, моделью и зависимостями partial |
 | 2026-06-15 | Полное XML-покрытие публичных типов и членов в Context/UI (классы, интерфейсы, свойства, методы, параметры) |
 | 2026-06-15 | Добавлена XML-документация в ключевых слоях Context/UI: сервисы, модели, PageModel, интерфейсы и инфраструктурные классы |
