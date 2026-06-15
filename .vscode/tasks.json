@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj",
+                "${workspaceFolder}/VTBL.RabbitIntegration.Monitor.UI/VTBL.RabbitIntegration.Monitor.UI.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj",
+                "${workspaceFolder}/VTBL.RabbitIntegration.Monitor.UI/VTBL.RabbitIntegration.Monitor.UI.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj"
+                "${workspaceFolder}/VTBL.RabbitIntegration.Monitor.UI/VTBL.RabbitIntegration.Monitor.UI.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

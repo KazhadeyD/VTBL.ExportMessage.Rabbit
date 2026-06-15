@@ -1,0 +1,160 @@
+@*
+    Панель результатов: список сообщений, статусы, пагинация, кнопка «Обновить».
+    Модель: IIntegrationPageModel.
+    Partial: _IntegrationPageSizeSelector, _IntegrationPagination.
+    Частичное обновление: GET handler Results (OnGetResultsAsync).
+*@
+@model VTBL.RabbitIntegration.Monitor.UI.Models.IIntegrationPageModel
+
+@* id="integration-results-panel" — цель для AJAX из integration-results-refresh.js. *@
+<section class="col-lg-7 col-xl-8 integration-page__results" id="integration-results-panel">
+    <div class="card integration-panel h-100">
+        @* Шапка: счётчик, выбор pageSize, кнопка обновления без перезагрузки страницы. *@
+        <div class="card-header integration-panel__header d-flex justify-content-between align-items-center">
+            <h2 class="integration-panel__title mb-0">Результаты</h2>
+            <div class="d-flex align-items-center flex-shrink-0 ml-2">
+                @if (string.IsNullOrEmpty(Model.ResultsErrorMessage)
+                    && string.IsNullOrEmpty(Model.ErrorMessage)
+                    && Model.TotalCount > 0)
+                {
+                    <span class="badge badge-secondary" title="Всего сообщений">@Model.TotalCount</span>
+                }
+                <partial name="_IntegrationPageSizeSelector" model="Model" />
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary integration-results-refresh ml-2"
+                        title="Обновить результаты">
+                    Обновить
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body integration-panel__body integration-results">
+            @* Ошибка только панели результатов (handler Results), страница при этом может быть загружена. *@
+            @if (!string.IsNullOrEmpty(Model.ResultsErrorMessage))
+            {
+                <div class="alert alert-warning mb-0" role="alert">@Model.ResultsErrorMessage</div>
+            }
+            @* Глобальная ошибка страницы — дублировать список не нужно. *@
+            else if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <p class="text-muted mb-0">Результаты недоступны — см. сообщение выше.</p>
+            }
+            else if (Model.TotalCount == 0)
+            {
+                <p class="text-muted mb-0">
+                    @(Model.HasActiveFilter ? "По заданным фильтрам ничего не найдено." : "Сообщений нет.")
+                </p>
+            }
+            else
+            {
+                @* Пагинация сверху — удобнее при длинном списке. *@
+                @if (Model.TotalPages > 1)
+                {
+                    <partial name="_IntegrationPagination" model="Model" />
+                }
+                <p class="text-muted small integration-results__summary">
+                    Показано @Model.RangeFrom–@Model.RangeTo из @Model.TotalCount
+                </p>
+
+                @* dynamic — общий partial для Kka/Nova/Remarketing без отдельных view-моделей. *@
+                @foreach (dynamic message in Model.MessageGroups)
+                {
+                    <article class="integration-message-group" id="message-@message.Id">
+                        @* Заголовок карточки: метаданные сообщения и привязка к Rabbit. *@
+                        <header class="integration-message-group__header">
+                            <h3 class="integration-message-group__id mb-1">
+                                <span class="text-muted">Id:</span> @message.Id
+                            </h3>
+                            <dl class="row integration-message-group__meta mb-0 small">
+                                <dt class="col-sm-3 col-md-2">OperationKey</dt>
+                                <dd class="col-sm-9 col-md-4">@message.OperationKey</dd>
+                                <dt class="col-sm-3 col-md-2">Endpoint</dt>
+                                <dd class="col-sm-9 col-md-4">@message.Endpoint</dd>
+                                <dt class="col-sm-3 col-md-2">Created</dt>
+                                <dd class="col-sm-9 col-md-4">@message.Created.ToString("yyyy-MM-dd HH:mm:ss")</dd>
+                                <dt class="col-sm-3 col-md-2">MessageId</dt>
+                                <dd class="col-sm-9 col-md-4">@(message.MessageId?.ToString() ?? "—")</dd>
+                                @if (message.OperationConfiguration != null)
+                                {
+                                    <dt class="col-sm-3 col-md-2">Exchange</dt>
+                                    <dd class="col-sm-9 col-md-4">@message.OperationConfiguration.SendPackageRabbitExchange</dd>
+                                    <dt class="col-sm-3 col-md-2">Routing key</dt>
+                                    <dd class="col-sm-9 col-md-4">@message.OperationConfiguration.SendPackageRabbitRoutingkey</dd>
+                                }
+                            </dl>
+                        </header>
+
+                        @* Body свёрнут в details — экономия места при больших payload. *@
+                        @if (!string.IsNullOrEmpty((string)message.Body))
+                        {
+                            <details class="integration-message-group__body-details mb-2">
+                                <summary class="small text-primary">Body</summary>
+                                <pre class="integration-message-group__body small mb-0 mt-2">@message.Body</pre>
+                            </details>
+                        }
+
+                        @* История статусов отсортирована на сервере по RowVersion. *@
+                        <div class="integration-message-group__statuses">
+                            <h4 class="h6 text-muted mb-2">Статусы (@message.StatusHistory.Count)</h4>
+                            @if (message.StatusHistory.Count == 0)
+                            {
+                                <p class="text-muted small mb-0">Записей статуса нет.</p>
+                            }
+                            else
+                            {
+                                <table class="table table-sm table-bordered mb-0">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Created</th>
+                                            <th>Status</th>
+                                            <th>ProcessingId</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (dynamic status in message.StatusHistory)
+                                        {
+                                            <tr>
+                                                <td>@status.Created.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                                <td>@Model.ResolveStatusName((int?)status.StatusId)</td>
+                                                <td>@(status.ProcessingId?.ToString() ?? "—")</td>
+                                            </tr>
+                                            @* Дополнительные строки — только если есть текст SendMessage. *@
+                                            @if (!string.IsNullOrEmpty((string)status.SendMessage))
+                                            {
+                                                <tr class="integration-status-expand-row">
+                                                    <td colspan="3" class="pt-0">
+                                                        <details class="integration-message-group__body-details">
+                                                            <summary class="small text-primary">SendMessage</summary>
+                                                            <pre class="integration-message-group__body small mb-0 mt-2">@status.SendMessage</pre>
+                                                        </details>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            @if (!string.IsNullOrEmpty((string)status.ErrorMessage))
+                                            {
+                                                <tr class="integration-status-expand-row">
+                                                    <td colspan="3" class="pt-0">
+                                                        <details class="integration-message-group__body-details">
+                                                            <summary class="small text-danger">Error</summary>
+                                                            <pre class="integration-message-group__body small mb-0 mt-2">@status.ErrorMessage</pre>
+                                                        </details>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </article>
+                }
+
+                @* Дублируем пагинацию снизу после прокрутки списка. *@
+                @if (Model.TotalPages > 1)
+                {
+                    <partial name="_IntegrationPagination" model="Model" />
+                }
+            }
+        </div>
+    </div>
+</section>

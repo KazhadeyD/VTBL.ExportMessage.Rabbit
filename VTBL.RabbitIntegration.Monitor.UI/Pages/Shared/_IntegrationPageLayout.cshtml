@@ -1,0 +1,30 @@
+@*
+    Каркас страницы интеграции: заголовок, фильтры, панель результатов.
+    Модель: IIntegrationPageModel.
+    Partial: _IntegrationDataErrorAlert, _IntegrationFiltersForm, _IntegrationResultsPanel.
+*@
+@model VTBL.RabbitIntegration.Monitor.UI.Models.IIntegrationPageModel
+
+<div class="integration-page">
+    <h1 class="integration-page__title">@Model.PageTitle</h1>
+
+    @* Ошибка полной загрузки страницы (OnGetAsync), не путать с ResultsErrorMessage. *@
+    <partial name="_IntegrationDataErrorAlert" model="Model" />
+
+    <div class="row integration-page__layout">
+        @* Левая колонка: GET-форма фильтров. *@
+        <aside class="col-lg-5 col-xl-4 integration-page__filters mb-3 mb-lg-0">
+            <div class="card integration-panel h-100">
+                <div class="card-header integration-panel__header">
+                    <h2 class="integration-panel__title mb-0">Фильтры</h2>
+                </div>
+                <div class="card-body integration-panel__body">
+                    <partial name="_IntegrationFiltersForm" model="Model" />
+                </div>
+            </div>
+        </aside>
+
+        @* Правая колонка: список сообщений, пагинация, частичное обновление. *@
+        <partial name="_IntegrationResultsPanel" model="Model" />
+    </div>
+</div>

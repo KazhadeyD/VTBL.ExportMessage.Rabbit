@@ -1,4 +1,4 @@
-# VTBL.ExportMessage.Rabbit
+# VTBL.RabbitIntegration.Monitor
 
 Веб-приложение для чтения и отображения состояния сообщений RabbitMQ. Тело и метаданные сообщений хранятся в БД **MSCRM_EXT** (MS SQL Server).
 
@@ -42,14 +42,14 @@ docker logs vtbl-mssql-init
 - **User:** `sa`
 - **Password:** значение `MSSQL_SA_PASSWORD` из `.env`
 
-Строка подключения для UI (Development) — в `VTBL.ExportMessage.Rabbit.UI/appsettings.Development.json` (`ConnectionStrings:MSCRM_EXT`). Пароль должен совпадать с `.env`.
+Строка подключения для UI (Development) — в `VTBL.RabbitIntegration.Monitor.UI/appsettings.Development.json` (`ConnectionStrings:MSCRM_EXT`). Пароль должен совпадать с `.env`.
 
 ### Хранение данных SQL Server
 
 | Путь на хосте | В контейнере | Назначение |
 |---------------|--------------|------------|
-| Docker-том `vtbl-exportmessage-mssql-data` | `/var/opt/mssql` | Файлы БД (mdf/ldf) |
-| `E:\volumes\VTBL.ExportMessage.Rabbit.UI\backup` | `/var/opt/mssql/backup` | Бэкапы `.bak` (видны в проводнике) |
+| Docker-том `vtbl-rabbitintegration-monitor-mssql-data` | `/var/opt/mssql` | Файлы БД (mdf/ldf) |
+| `E:\volumes\VTBL.RabbitIntegration.Monitor.UI\backup` | `/var/opt/mssql/backup` | Бэкапы `.bak` (видны в проводнике) |
 
 **Почему не весь `/var/opt/mssql` на `E:\`:** SQL Server Linux в Docker Desktop на Windows при bind mount на NTFS падает с `Failed to load LSA: 0xc0070102`. Именованный том — рабочий вариант.
 
@@ -58,7 +58,7 @@ docker logs vtbl-mssql-init
 Просмотр тома с данными БД:
 
 ```powershell
-docker volume inspect vtbl-exportmessage-mssql-data
+docker volume inspect vtbl-rabbitintegration-monitor-mssql-data
 ```
 
 В Docker Desktop → Settings → Resources → File sharing должен быть доступен диск `E:` (для каталога `backup`).
@@ -67,9 +67,9 @@ docker volume inspect vtbl-exportmessage-mssql-data
 
 ```powershell
 docker compose down
-docker volume rm vtbl-exportmessage-mssql-data
-Remove-Item -Path "E:\volumes\VTBL.ExportMessage.Rabbit.UI\*" -Recurse -Force -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path "E:\volumes\VTBL.ExportMessage.Rabbit.UI\backup" -Force
+docker volume rm vtbl-rabbitintegration-monitor-mssql-data
+Remove-Item -Path "E:\volumes\VTBL.RabbitIntegration.Monitor.UI\*" -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path "E:\volumes\VTBL.RabbitIntegration.Monitor.UI\backup" -Force
 docker compose up -d
 ```
 
@@ -79,7 +79,7 @@ docker compose up -d
 docker compose down          # контейнеры остановлены, данные на диске E:\volumes\... сохранены
 ```
 
-Полный сброс БД — `docker compose down`, `docker volume rm vtbl-exportmessage-mssql-data`, затем `docker compose up -d`.
+Полный сброс БД — `docker compose down`, `docker volume rm vtbl-rabbitintegration-monitor-mssql-data`, затем `docker compose up -d`.
 
 ### Повторная инициализация схемы
 
@@ -90,8 +90,8 @@ docker compose down          # контейнеры остановлены, да
 ```
 docker-compose.yml
 docker/mssql/init/                    # SQL-скрипты инициализации
-VTBL.ExportMessage.Rabbit.Context/    # EF Core, сущности, MscrmExtDbContext
-VTBL.ExportMessage.Rabbit.UI/         # ASP.NET Core Razor Pages
+VTBL.RabbitIntegration.Monitor.Context/    # EF Core, сущности, MscrmExtDbContext
+VTBL.RabbitIntegration.Monitor.UI/         # ASP.NET Core Razor Pages
 ```
 
 ## Добавление новой интеграционной системы
@@ -195,7 +195,7 @@ public static readonly IntegrationSystemDescriptor MySystem = new IntegrationSys
 #### 6. Проверка
 
 ```powershell
-dotnet build VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj -o _build_out
+dotnet build VTBL.RabbitIntegration.Monitor.UI/VTBL.RabbitIntegration.Monitor.UI.csproj -o _build_out
 ```
 
 Далее вручную:
@@ -209,31 +209,32 @@ dotnet build VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj -o
 ### Сводка новых файлов (минимум)
 
 ```
-VTBL.ExportMessage.Rabbit.Context/Entities/
+VTBL.RabbitIntegration.Monitor.Context/Entities/
   ExportMessageRabbit<System>.cs
   ExportMessageRabbit<System>Status.cs
-VTBL.ExportMessage.Rabbit.Context/MscrmExtDbContext.cs            # DbSet + Fluent API
-VTBL.ExportMessage.Rabbit.Context/Entities/
+VTBL.RabbitIntegration.Monitor.Context/MscrmExtDbContext.cs            # DbSet + Fluent API
+VTBL.RabbitIntegration.Monitor.Context/Entities/
   RabbitIntegrationOperationKeysConfiguration.cs                  # ICollection навиг.
-VTBL.ExportMessage.Rabbit.UI/Models/
+VTBL.RabbitIntegration.Monitor.UI/Models/
   <System>MessageFilter.cs
   <System>MessagesPageResult.cs
   IntegrationSystemInfo.cs                                        # новый дескриптор
-VTBL.ExportMessage.Rabbit.UI/Services/
+VTBL.RabbitIntegration.Monitor.UI/Services/
   I<System>MessageService.cs
   <System>MessageService.cs
-VTBL.ExportMessage.Rabbit.UI/Pages/
+VTBL.RabbitIntegration.Monitor.UI/Pages/
   <System>.cshtml
   <System>.cshtml.cs
-VTBL.ExportMessage.Rabbit.UI/Startup.cs                           # DI
-VTBL.ExportMessage.Rabbit.UI/Pages/Shared/_IntegrationNavItems.cshtml
-VTBL.ExportMessage.Rabbit.UI/Pages/Index.cshtml.cs              # дашборд
+VTBL.RabbitIntegration.Monitor.UI/Startup.cs                           # DI
+VTBL.RabbitIntegration.Monitor.UI/Pages/Shared/_IntegrationNavItems.cshtml
+VTBL.RabbitIntegration.Monitor.UI/Pages/Index.cshtml.cs              # дашборд
 ```
 
 ## История изменений
 
 | Дата | Изменение |
 |------|-----------|
+| 2026-06-15 | Переименование решения и проектов: `VTBL.ExportMessage.Rabbit` → `VTBL.RabbitIntegration.Monitor` (папки, namespace, slnx, docker-том, пути в README/vscode) |
 | 2026-06-15 | site.css: секционные комментарии по блокам (layout, navbar, footer, integration-*) |
 | 2026-06-15 | README: чеклист новой системы — убран подраздел про SQL-скрипты БД |
 | 2026-06-15 | README: подробный чеклист добавления новой интеграционной системы (эталон Remarketing, актуальные partial'ы и регистрация) |
@@ -256,7 +257,7 @@ VTBL.ExportMessage.Rabbit.UI/Pages/Index.cshtml.cs              # дашборд
 | 2026-05-28 | Вынесен общий каркас integration-систем: `IntegrationMessageServiceBase`, общие модели фильтра/пагинации/статистики, общий partial пагинации |
 | 2026-05-26 | Seed `RabbitIntegrationOperationKeysConfiguration` (7 операций KKA/1C) |
 | 2026-05-26 | Таблица `RabbitIntegrationOperationKeysConfiguration` (SQL + EF) |
-| 2026-05-26 | Проект `VTBL.ExportMessage.Rabbit.Context` (EF Core 5, `MscrmExtDbContext`) |
+| 2026-05-26 | Проект `VTBL.RabbitIntegration.Monitor.Context` (EF Core 5, `MscrmExtDbContext`) |
 | 2026-05-26 | Web UI: страница Debug — загрузка `ExportMessageRabbitStatusName` из БД |
 | 2026-05-26 | MSSQL: именованный том + `E:\volumes\...\backup` (обход LSA на Windows) |
 | 2026-05-26 | Seed `ExportMessageRabbitStatusName` (Ready, InProcessed, Send, Close, Error) |

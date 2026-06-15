@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="VTBL.ExportMessage.Rabbit.Context/VTBL.ExportMessage.Rabbit.Context.csproj" />
-  <Project Path="VTBL.ExportMessage.Rabbit.UI/VTBL.ExportMessage.Rabbit.UI.csproj" />
+  <Project Path="VTBL.RabbitIntegration.Monitor.Context/VTBL.RabbitIntegration.Monitor.Context.csproj" />
+  <Project Path="VTBL.RabbitIntegration.Monitor.UI/VTBL.RabbitIntegration.Monitor.UI.csproj" />
 </Solution>

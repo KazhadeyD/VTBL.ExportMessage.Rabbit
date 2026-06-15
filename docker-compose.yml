@@ -1,4 +1,4 @@
-name: vtbl-exportmessage-rabbit
+name: vtbl-rabbitintegration-monitor
 
 services:
   mssql:
@@ -15,7 +15,7 @@ services:
       # Файлы БД: именованный том (bind E:\ ломает MSSQL на Docker Desktop — LSA 0xc0070102).
       - vtbl_mssql_data:/var/opt/mssql
       # Каталог на E:\ — бэкапы и ручной экспорт (виден с хоста).
-      - E:/volumes/VTBL.ExportMessage.Rabbit.UI/backup:/var/opt/mssql/backup
+      - E:/volumes/VTBL.RabbitIntegration.Monitor.UI/backup:/var/opt/mssql/backup
     healthcheck:
       test:
         [
@@ -55,4 +55,4 @@ services:
 
 volumes:
   vtbl_mssql_data:
-    name: vtbl-exportmessage-mssql-data
+    name: vtbl-rabbitintegration-monitor-mssql-data

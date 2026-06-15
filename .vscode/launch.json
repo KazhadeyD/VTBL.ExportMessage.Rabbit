@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/VTBL.ExportMessage.Rabbit.UI/bin/Debug/net5.0/VTBL.ExportMessage.Rabbit.UI.dll",
+            "program": "${workspaceFolder}/VTBL.RabbitIntegration.Monitor.UI/bin/Debug/net5.0/VTBL.RabbitIntegration.Monitor.UI.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/VTBL.ExportMessage.Rabbit.UI",
+            "cwd": "${workspaceFolder}/VTBL.RabbitIntegration.Monitor.UI",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {

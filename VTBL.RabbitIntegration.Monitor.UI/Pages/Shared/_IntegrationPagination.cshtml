@@ -1,0 +1,66 @@
+@*
+    Пагинация результатов интеграционной страницы.
+    Модель: IIntegrationPagingModel.
+    Сохраняет активные фильтры в route-параметрах ссылок.
+*@
+@using System.Linq
+@model VTBL.RabbitIntegration.Monitor.UI.Models.IIntegrationPagingModel
+
+<nav class="integration-pagination" aria-label="Навигация по страницам">
+    <ul class="pagination pagination-sm flex-wrap mb-2">
+        @* Предыдущая страница; disabled без ссылки на первой. *@
+        <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+            @if (Model.HasPrevious)
+            {
+                <a class="page-link" asp-page="@Model.PageName" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-id="@Model.FilterIdForRoute" asp-route-operationKey="@Model.FilterOperationKeyForRoute" asp-route-hasError="@Model.FilterHasErrorForRoute" asp-route-hasSendMessage="@Model.FilterHasSendMessageForRoute" asp-route-createdFrom="@Model.FilterCreatedFromForRoute" asp-route-createdTo="@Model.FilterCreatedToForRoute" asp-route-pageSize="@Model.PageSize" aria-label="Предыдущая">Назад</a>
+            }
+            else
+            {
+                <span class="page-link">Назад</span>
+            }
+        </li>
+
+        @* Первая страница и многоточие, если окно не начинается с 1. *@
+        @if (Model.GetVisiblePageNumbers().FirstOrDefault() > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="@Model.PageName" asp-route-pageNumber="1" asp-route-id="@Model.FilterIdForRoute" asp-route-operationKey="@Model.FilterOperationKeyForRoute" asp-route-hasError="@Model.FilterHasErrorForRoute" asp-route-hasSendMessage="@Model.FilterHasSendMessageForRoute" asp-route-createdFrom="@Model.FilterCreatedFromForRoute" asp-route-createdTo="@Model.FilterCreatedToForRoute" asp-route-pageSize="@Model.PageSize">1</a>
+            </li>
+            @if (Model.GetVisiblePageNumbers().FirstOrDefault() > 2)
+            {
+                <li class="page-item disabled"><span class="page-link">…</span></li>
+            }
+        }
+
+        @* Скользящее окно номеров (логика в GetVisiblePageNumbers). *@
+        @foreach (var pageNumber in Model.GetVisiblePageNumbers())
+        {
+            <li class="page-item @(pageNumber == Model.PageNumber ? "active" : "")">
+                <a class="page-link" asp-page="@Model.PageName" asp-route-pageNumber="@pageNumber" asp-route-id="@Model.FilterIdForRoute" asp-route-operationKey="@Model.FilterOperationKeyForRoute" asp-route-hasError="@Model.FilterHasErrorForRoute" asp-route-hasSendMessage="@Model.FilterHasSendMessageForRoute" asp-route-createdFrom="@Model.FilterCreatedFromForRoute" asp-route-createdTo="@Model.FilterCreatedToForRoute" asp-route-pageSize="@Model.PageSize">@pageNumber</a>
+            </li>
+        }
+
+        @* Последняя страница и многоточие, если окно не доходит до конца. *@
+        @if (Model.GetVisiblePageNumbers().LastOrDefault() < Model.TotalPages)
+        {
+            @if (Model.GetVisiblePageNumbers().LastOrDefault() < Model.TotalPages - 1)
+            {
+                <li class="page-item disabled"><span class="page-link">…</span></li>
+            }
+            <li class="page-item">
+                <a class="page-link" asp-page="@Model.PageName" asp-route-pageNumber="@Model.TotalPages" asp-route-id="@Model.FilterIdForRoute" asp-route-operationKey="@Model.FilterOperationKeyForRoute" asp-route-hasError="@Model.FilterHasErrorForRoute" asp-route-hasSendMessage="@Model.FilterHasSendMessageForRoute" asp-route-createdFrom="@Model.FilterCreatedFromForRoute" asp-route-createdTo="@Model.FilterCreatedToForRoute" asp-route-pageSize="@Model.PageSize">@Model.TotalPages</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.HasNext ? "" : "disabled")">
+            @if (Model.HasNext)
+            {
+                <a class="page-link" asp-page="@Model.PageName" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-id="@Model.FilterIdForRoute" asp-route-operationKey="@Model.FilterOperationKeyForRoute" asp-route-hasError="@Model.FilterHasErrorForRoute" asp-route-hasSendMessage="@Model.FilterHasSendMessageForRoute" asp-route-createdFrom="@Model.FilterCreatedFromForRoute" asp-route-createdTo="@Model.FilterCreatedToForRoute" asp-route-pageSize="@Model.PageSize" aria-label="Следующая">Вперёд</a>
+            }
+            else
+            {
+                <span class="page-link">Вперёд</span>
+            }
+        </li>
+    </ul>
+</nav>

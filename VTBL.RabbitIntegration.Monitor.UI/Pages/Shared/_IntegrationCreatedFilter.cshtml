@@ -1,0 +1,39 @@
+@*
+    Поля фильтра по диапазону Created (от/до).
+    Модель: IIntegrationPageModel.
+*@
+@model VTBL.RabbitIntegration.Monitor.UI.Models.IIntegrationPageModel
+
+@* Нижняя граница включительно; значение в формате datetime-local из FilterCreatedFrom. *@
+<div class="form-group">
+    <label for="filter-created-from">Created от</label>
+    <input type="datetime-local"
+           class="form-control"
+           id="filter-created-from"
+           name="createdFrom"
+           value="@Model.FilterCreatedFrom"
+           step="60" />
+    @if (!string.IsNullOrEmpty(Model.FilterCreatedFromError))
+    {
+        <small class="form-text text-danger">@Model.FilterCreatedFromError</small>
+    }
+</div>
+
+@* Верхняя граница; FilterCreatedRangeError показывается здесь (ошибка пары от/до). *@
+<div class="form-group">
+    <label for="filter-created-to">Created до</label>
+    <input type="datetime-local"
+           class="form-control"
+           id="filter-created-to"
+           name="createdTo"
+           value="@Model.FilterCreatedTo"
+           step="60" />
+    @if (!string.IsNullOrEmpty(Model.FilterCreatedToError))
+    {
+        <small class="form-text text-danger">@Model.FilterCreatedToError</small>
+    }
+    @if (!string.IsNullOrEmpty(Model.FilterCreatedRangeError))
+    {
+        <small class="form-text text-danger">@Model.FilterCreatedRangeError</small>
+    }
+</div>

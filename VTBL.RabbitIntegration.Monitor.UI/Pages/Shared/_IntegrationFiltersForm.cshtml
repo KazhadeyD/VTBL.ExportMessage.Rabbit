@@ -1,0 +1,89 @@
+@*
+    Форма GET-фильтров интеграционной страницы.
+    Модель: IIntegrationPageModel.
+    Partial: _IntegrationCreatedFilter.
+    Query: id, operationKey, hasError, hasSendMessage, createdFrom, createdTo, pageSize.
+*@
+@model VTBL.RabbitIntegration.Monitor.UI.Models.IIntegrationPageModel
+
+@* method="get" — фильтры и пагинация живут в query string, можно делиться ссылкой. *@
+<form method="get" asp-page="@Model.PageName" class="integration-filters-form">
+    @* Точный поиск по GUID сообщения; маска задаётся в integration-filters.js. *@
+    <div class="form-group">
+        <label for="filter-id">Id</label>
+        <input type="text"
+               class="form-control integration-filter-id-input"
+               id="filter-id"
+               name="id"
+               value="@Model.FilterId"
+               placeholder="________-____-____-____-____________"
+               maxlength="36"
+               inputmode="text"
+               autocomplete="off"
+               spellcheck="false"
+               aria-describedby="filter-id-hint" />
+        <small id="filter-id-hint" class="form-text text-muted">Формат: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</small>
+        @if (!string.IsNullOrEmpty(Model.FilterIdError))
+        {
+            <small class="form-text text-danger">@Model.FilterIdError</small>
+        }
+    </div>
+
+    @* Список ключей из RabbitIntegrationOperationKeysConfiguration. *@
+    <div class="form-group">
+        <label for="filter-operation-key">OperationKey</label>
+        <select class="form-control"
+                id="filter-operation-key"
+                name="operationKey">
+            <option value="">— все —</option>
+            @foreach (var operationKey in Model.OperationKeys)
+            {
+                if (operationKey == Model.FilterOperationKey)
+                {
+                    <option value="@operationKey" selected="selected">@operationKey</option>
+                }
+                else
+                {
+                    <option value="@operationKey">@operationKey</option>
+                }
+            }
+        </select>
+        @if (!string.IsNullOrEmpty(Model.FilterOperationKeyError))
+        {
+            <small class="form-text text-danger">@Model.FilterOperationKeyError</small>
+        }
+    </div>
+
+    <partial name="_IntegrationCreatedFilter" model="Model" />
+
+    @* Флаги транслируются в EXISTS-подзапросы по StatusHistory на сервере. *@
+    <div class="form-group mb-2">
+        <div class="form-check">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="filter-has-error"
+                   name="hasError"
+                   value="true"
+                   @(Model.FilterHasError ? "checked=\"checked\"" : null) />
+            <label class="form-check-label" for="filter-has-error">Есть Error в статусах</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="filter-has-send-message"
+                   name="hasSendMessage"
+                   value="true"
+                   @(Model.FilterHasSendMessage ? "checked=\"checked\"" : null) />
+            <label class="form-check-label" for="filter-has-send-message">Есть SendMessage в статусах</label>
+        </div>
+    </div>
+
+    @* Сохраняем текущий pageSize при повторной отправке фильтра. *@
+    <input type="hidden" name="pageSize" value="@Model.PageSize" />
+
+    <div class="d-flex flex-wrap">
+        <button type="submit" class="btn btn-primary btn-sm mr-2 mb-2">Применить</button>
+        @* Сброс — переход на страницу без query string. *@
+        <a asp-page="@Model.PageName" class="btn btn-outline-secondary btn-sm mb-2">Сбросить</a>
+    </div>
+</form>
